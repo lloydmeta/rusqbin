@@ -47,14 +47,15 @@ struct Args {
 }
 
 fn main() {
-    let try_args: Result<Args, docopt::Error> = Docopt::new(USAGE).and_then(|d| d.version(Some(version())).decode());
+    let try_args: Result<Args, docopt::Error> = Docopt::new(USAGE)
+        .and_then(|d| d.version(Some(version())).decode());
     match try_args {
         Ok(Args { flag_port: Some(port) }) => start_on_port(port),
         Ok(Args { flag_port: None }) => {
             println!("\nUsing default port 9999");
             start_on_port(9999)
-        },
-        Err(e) => e.exit()
+        }
+        Err(e) => e.exit(),
     }
 }
 

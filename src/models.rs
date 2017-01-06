@@ -70,7 +70,6 @@ impl Id {
 pub struct IdExtractor(Regex);
 
 impl IdExtractor {
-
     /// Returns a new Id extractor
     /// ```
     /// use rusqbin::models::*;

@@ -17,7 +17,6 @@ use common::*;
 
 /// Internal tests: server is started and stopped and requests are made to
 /// it, but internal state is checked from Rust using the bin server.
-
 #[test]
 fn test_list_empty() {
     run_with_server(|test_env| {
@@ -53,11 +52,11 @@ fn test_requesting_bin_summary() {
         let bin_id = new_bin.id;
 
         let requests = vec![ServerRequest {
-            method: Method::Get,
-            headers: Headers::new(),
-            path: "/",
-            body: None,
-        },
+                                method: Method::Get,
+                                headers: Headers::new(),
+                                path: "/",
+                                body: None,
+                            },
                             ServerRequest {
                                 method: Method::Get,
                                 headers: Headers::new(),
@@ -93,11 +92,11 @@ fn test_requesting_bin_requests() {
         headers.set(XDoodle("nope".to_owned()));
 
         let requests = vec![ServerRequest {
-            method: Method::Post,
-            headers: headers,
-            path: "/",
-            body: Some("hey there."),
-        }];
+                                method: Method::Post,
+                                headers: headers,
+                                path: "/",
+                                body: Some("hey there."),
+                            }];
         test_env.parallel_requests(&bin_id, &requests, 1);
 
         let ref storage = test_env.server.storage.lock().unwrap();

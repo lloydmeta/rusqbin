@@ -25,7 +25,6 @@ pub type Bin = Vec<Request>;
 
 /// Trait for storage operations for Requests.
 pub trait Bins {
-
     /// Returns a BinSummary of a newly-reated bin. The Id in the summary
     /// must be unique at the time of creation.
     fn create_bin(&mut self) -> BinSummary;
@@ -138,7 +137,7 @@ mod tests {
     fn test_inmemory_get_bin_summary() {
         let mut bins = InMemoryBins::new();
         let bin = bins.create_bin();
-        let req = Request{
+        let req = Request {
             content_length: None,
             content_type: Some("fake".to_owned()),
             time: 123,
@@ -158,7 +157,7 @@ mod tests {
     fn test_inmemory_get_bin() {
         let mut bins = InMemoryBins::new();
         let bin = bins.create_bin();
-        let req = Request{
+        let req = Request {
             content_length: None,
             content_type: Some("fake".to_owned()),
             time: 123,
@@ -172,23 +171,24 @@ mod tests {
 
         let summary = bins.get_bin(&bin.id).unwrap();
         // Don't want to implement Clone in case we clone the requests by accident somewhere..
-        assert_eq!(summary[0], Request{
-            content_length: None,
-            content_type: Some("fake".to_owned()),
-            time: 123,
-            method: "GET".to_owned(),
-            path: "/whoa".to_owned(),
-            body: None,
-            headers: HashMap::new(),
-            query_string: HashMap::new(),
-        })
+        assert_eq!(summary[0],
+                   Request {
+                       content_length: None,
+                       content_type: Some("fake".to_owned()),
+                       time: 123,
+                       method: "GET".to_owned(),
+                       path: "/whoa".to_owned(),
+                       body: None,
+                       headers: HashMap::new(),
+                       query_string: HashMap::new(),
+                   })
     }
 
     #[test]
     fn test_inmemory_get_bin_summaries() {
         let mut bins = InMemoryBins::new();
         let bin = bins.create_bin();
-        let req = Request{
+        let req = Request {
             content_length: None,
             content_type: Some("fake".to_owned()),
             time: 123,
