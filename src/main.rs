@@ -1,39 +1,60 @@
 extern crate rusqbin;
 extern crate hyper;
+extern crate rustc_serialize;
+extern crate docopt;
 
 use hyper::server::Listening;
 use rusqbin::server::BinsServer;
 use rusqbin::storage::InMemoryBins;
 
-use std::env::args;
-use std::num::ParseIntError;
+use docopt::Docopt;
 
-const GREET: &'static str = "\n\
-                              **************************** Rusqbin ****************************\n\n\
-                              Send:\n\n\
-                              - POST    /rusqbins           To create a bin and get back bin_id\n\
-                              - GET     /rusqbins           To list bin summaries\n\
-                              - GET     /rusqbins/${bin_id} To get bin-specific information\n\
-                              - DELETE  /rusqbins/${bin_id} To delete a bin\n\n\
-                              \
-                              In any other case, send requests with a X-Rusqbin-Id header with a bin id\n\
-                              to have your requests logged to a bin for later retrieval. ";
-const USAGE: &'static str = "\nUsage: cargo rusqbin [port: optional, defaults to 9999]\n";
+const GREET: &'static str = r#"
+
+**************************** Rusqbin ****************************
+
+Send:
+- POST    /rusqbins           To create a bin and get back bin_id
+- GET     /rusqbins           To list bin summaries
+- GET     /rusqbins/${bin_id} To get bin-specific information
+- DELETE  /rusqbins/${bin_id} To delete a bin
+
+In any other case, send requests with a X-Rusqbin-Id header with a
+bin_id to have your requests logged to a bin for later retrieval.
+"#;
+
+const USAGE: &'static str = r#"
+
+**************************** Rusqbin ****************************
+
+A web server that stashes your requests for later retrieval.
+
+Usage:
+    cargo rusqbin [--port=<pn>]
+    cargo rusqbin -h | --help
+    cargo rusqbin --version
+
+Options:
+    -h, --help           Show this help message and exit.
+    --version            Show the version.
+    --port=<pn>          Run on a specific port [default: 9999]
+"#;
+
+
+#[derive(Debug, RustcDecodable)]
+struct Args {
+    flag_port: Option<usize>,
+}
 
 fn main() {
-    // First argument is usually the path of the executable, so we use
-    // the second one instead
-    match args().skip(1).next() {
-        Some(s) => {
-            match parse_port(s) {
-                Ok(p) => start_on_port(p),
-                _ => println!("{}", USAGE),
-            }
-        }
-        None => {
+    let try_args: Result<Args, docopt::Error> = Docopt::new(USAGE).and_then(|d| d.version(Some(version())).decode());
+    match try_args {
+        Ok(Args { flag_port: Some(port) }) => start_on_port(port),
+        Ok(Args { flag_port: None }) => {
             println!("\nUsing default port 9999");
             start_on_port(9999)
-        }
+        },
+        Err(e) => e.exit()
     }
 }
 
@@ -46,17 +67,12 @@ fn start_on_port(p: usize) {
     println!("\nServer started on {}", s.address)
 }
 
-fn parse_port(s: String) -> Result<usize, CliError> {
-    Ok(s.trim().parse::<usize>()?)
-}
-
-#[derive(Debug)]
-enum CliError {
-    Parse(ParseIntError),
-}
-
-impl From<ParseIntError> for CliError {
-    fn from(e: ParseIntError) -> CliError {
-        CliError::Parse(e)
+fn version() -> String {
+    let (maj, min, pat) = (option_env!("CARGO_PKG_VERSION_MAJOR"),
+                           option_env!("CARGO_PKG_VERSION_MINOR"),
+                           option_env!("CARGO_PKG_VERSION_PATCH"));
+    match (maj, min, pat) {
+        (Some(maj), Some(min), Some(pat)) => format!("{}.{}.{}", maj, min, pat),
+        _ => "".to_owned(),
     }
 }

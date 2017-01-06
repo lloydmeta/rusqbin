@@ -4,7 +4,7 @@ Rusqbin is a web server that stashes your requests for later retrieval. It is av
 both a binary and a library.
 
 To use it as a binary, simply install it using `cargo install rusqbins` and then `cargo rusqbins`,
-and follow the simple usage instructions.
+and follow the simple usage instructions. The port the server runs on can be set using the `--port=port_num`.
 
 To use it as a library from within Rust code:
 
