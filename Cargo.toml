@@ -1,16 +1,13 @@
 [package]
-
 name = "rusqbin"
-version = "0.1.2"
+version = "0.1.3"
 authors = [ "Lloyd <lloydmeta@gmail.com>" ]
 description = "Rusqbin is a web server that stashes your requests for later retrieval to allow you to do end-to-end testing of code that makes HTTP calls. It is available as both a binary and a library."
 license = "MIT"
 homepage = "https://github.com/lloydmeta/rusqbin"
 keywords = [ "http", "webserver", "requests", "testing", "log" ]
 
-
 [dependencies]
-
 hyper = "0.9.14"
 time = "0.1"
 rustc-serialize = "0.3"
@@ -18,11 +15,7 @@ uuid = { version = "0.2", features = ["v4"] }
 regex = "0.2"
 url = "1.2.4"
 
-[lib]
-name = "rusqbin_lib"
-path = "src/lib.rs"
-
 [[bin]]
+name = "cargo-rusqbin"
+test = false
 doc = false
-name = "rusqbin"
-path = "src/main.rs"
