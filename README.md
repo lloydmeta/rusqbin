@@ -21,9 +21,9 @@ and follow the simple usage instructions. The port the server runs on can be set
 To use it as a library, add it to your project as [a crate dependency](https://crates.io/crates/rusqbin), then from within Rust code:
 
 ```rust
-# extern crate rusqbin;
-# extern crate hyper;
-# extern crate rustc_serialize;
+extern crate rusqbin;
+extern crate hyper;
+extern crate rustc_serialize;
 
 use rusqbin::storage::*;
 use rusqbin::server::*;
@@ -31,8 +31,6 @@ use rusqbin::models::*;
 use rustc_serialize::json;
 use hyper::client::Client;
 use std::io::Read;
-
-# fn main() {
 
 // Start a BinsServer on port 9000
 let s = BinsServer::new(7000, InMemoryBins::new());
