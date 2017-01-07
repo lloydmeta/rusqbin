@@ -3,6 +3,16 @@
 //! Rusqbin is a web server that stashes your requests for later retrieval. It is available as
 //! both a binary and a library.
 //!
+//! Rusqbin's web API is the following :
+//!
+//! - POST    /rusqbins                 To create a bin and get back bin_id
+//! - GET     /rusqbins                 To list bin summaries
+//! - GET     /rusqbins/${bin_id}       To get bin-specific information (lists all requests in the bin)
+//! - DELETE  /rusqbins/${bin_id}       To delete a bin
+//!
+//! In any other case, send requests with a X-Rusqbin-Id header with a bin_id to have your requests
+//! logged to a bin for later retrieval.
+//!
 //! To use it as a binary, simply install it using `cargo install rusqbin` and then `cargo rusqbin`,
 //! and follow the simple usage instructions.
 //!
