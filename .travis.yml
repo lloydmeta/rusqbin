@@ -9,7 +9,8 @@ before_script:
 script:
   - travis-cargo build
   - travis-cargo test
-  - cargo doc --no-deps
+  - travis-cargo clean
+  - travis-cargo --only nightly doc -- --no-deps
 after_success:
   - travis-cargo --only nightly doc-upload
 env:

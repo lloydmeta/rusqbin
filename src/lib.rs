@@ -22,26 +22,25 @@
 //!
 //! # fn main() {
 //!
+//! // Start a BinsServer on port 9000
 //! let s = BinsServer::new(7000, InMemoryBins::new());
 //! let mut l = s.start().unwrap();
 //!
 //! let client = Client::new();
 //!
-//! // Create a bin
+//! // Create a bin via HTTP
 //! let mut resp = client.post("http://localhost:7000/rusqbins").send().unwrap();
 //! let mut string = String::new();
 //! let _ = resp.read_to_string(&mut string).unwrap();
 //! let bin: BinSummary = json::decode(&*string).unwrap();
 //! let bin_id = bin.id.value();
 //!
-//! // Fire a request
+//! // Fire an HTTP request with the proper X-Rusqbin-Id header
 //! let _ = client.get("http://localhost:7000/hello").header(XRusqBinId(bin_id.to_owned())).send().unwrap();
 //!
-//! let mut bin_requests_resp = client.get(&*format!("http://localhost:7000/rusqbins/{}/requests", bin_id)).send().unwrap();
-//! let mut requests_string = String::new();
-//! let _ = bin_requests_resp.read_to_string(&mut requests_string).unwrap();
-//! let bin_requests: Vec<Request> = json::decode(&*requests_string).unwrap();
-//!
+//! // Access bin storage from within Rust code.
+//! let ref storage = s.storage.lock().unwrap();
+//! let bin_requests: &Bin = storage.get_bin(&bin.id).unwrap();
 //! let ref req = bin_requests[0];
 //!
 //! assert_eq!(req.method, "GET".to_owned());
