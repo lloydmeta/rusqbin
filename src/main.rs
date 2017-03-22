@@ -1,13 +1,14 @@
 extern crate rusqbin;
 extern crate hyper;
-extern crate rustc_serialize;
-extern crate docopt;
+extern crate clap;
 
 use hyper::server::Listening;
 use rusqbin::server::BinsServer;
 use rusqbin::storage::InMemoryBins;
+use clap::{Arg, App};
 
-use docopt::Docopt;
+const DEFAULT_PORT: usize = 9999;
+const DEFAULT_PORT_STR: &'static str = "9999";
 
 const GREET: &'static str = r#"
 
@@ -23,39 +24,30 @@ In any other case, send requests with a X-Rusqbin-Id header with a
 bin_id to have your requests logged to a bin for later retrieval.
 "#;
 
-const USAGE: &'static str = r#"
-
-**************************** Rusqbin ****************************
-
-A web server that stashes your requests for later retrieval.
-
-Usage:
-    cargo rusqbin [--port=<pn>]
-    cargo rusqbin -h | --help
-    cargo rusqbin --version
-
-Options:
-    -h, --help           Show this help message and exit.
-    --version            Show the version.
-    --port=<pn>          Run on a specific port [default: 9999]
-"#;
-
-
-#[derive(Debug, RustcDecodable)]
-struct Args {
-    flag_port: Option<usize>,
-}
 
 fn main() {
-    let try_args: Result<Args, docopt::Error> = Docopt::new(USAGE)
-        .and_then(|d| d.version(Some(version())).decode());
-    match try_args {
-        Ok(Args { flag_port: Some(port) }) => start_on_port(port),
-        Ok(Args { flag_port: None }) => {
-            println!("\nUsing default port 9999");
-            start_on_port(9999)
+
+    let matches = App::new("rusqbin-server")
+        .version(&version()[..])
+        .author("Lloyd (github.com/lloydmeta)")
+        .about("requestb.in in Rust")
+        .arg(Arg::with_name("port")
+            .short("p")
+            .default_value(DEFAULT_PORT_STR)
+            .help("Sets the port for your sever")
+            .required(false)
+            .index(1))
+        .get_matches();
+
+    match matches.value_of("port") {
+        Some(port_str) => {
+            let port: usize = port_str.parse().expect("Port must be number");
+            start_on_port(port)
         }
-        Err(e) => e.exit(),
+        None => {
+            print!("\nUsing default port {}", DEFAULT_PORT_STR);
+            start_on_port(DEFAULT_PORT)
+        }
     }
 }
 

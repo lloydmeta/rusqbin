@@ -23,8 +23,8 @@ bin_id to have your requests logged to a bin for later retrieval.
 
 ### Binary
 
-To use Rusqbin as a binary, simply install it using `cargo install rusqbin` and then run `cargo rusqbin`,
-and follow the simple usage instructions. The port the server runs on can be set by adding a `--port=port_num` argument.
+To use Rusqbin as a binary, simply install it using `cargo install rusqbin` and then run `rusqbin-server`,
+and follow the simple usage instructions. The port the server runs on can be set by optionally adding a port argument.
 
 ![Binary usage demo](https://raw.githubusercontent.com/lloydmeta/rusqbin/master/demo.gif)
 
