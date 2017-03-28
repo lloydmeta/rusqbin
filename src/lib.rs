@@ -5,15 +5,16 @@
 //!
 //! Rusqbin's web API is the following :
 //!
-//! - POST    /rusqbins                 To create a bin and get back bin_id
-//! - GET     /rusqbins                 To list bin summaries
-//! - GET     /rusqbins/${bin_id}       To get bin-specific information (lists all requests in the bin)
-//! - DELETE  /rusqbins/${bin_id}       To delete a bin
+//! - POST    /rusqbins                     To create a bin and get back bin_id
+//! - GET     /rusqbins                     To list bin summaries
+//! - GET     /rusqbins/${bin_id}/requests  To get detailed request information for a bin
+//! - GET     /rusqbins/${bin_id}           To get bin-specific information (lists all requests in the bin)
+//! - DELETE  /rusqbins/${bin_id}           To delete a bin
 //!
 //! In any other case, send requests with a X-Rusqbin-Id header with a bin_id to have your requests
 //! logged to a bin for later retrieval.
 //!
-//! To use it as a binary, simply install it using `cargo install rusqbin` and then `cargo rusqbin`,
+//! To use it as a binary, simply install it using `cargo install rusqbin` and then `rusqbin-server`,
 //! and follow the simple usage instructions.
 //!
 //! To use it as a library from within Rust code:
