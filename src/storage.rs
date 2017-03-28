@@ -79,11 +79,11 @@ impl Bins for InMemoryBins {
 
     fn get_bin_summary(&self, id: &Id) -> Option<BinSummary> {
         self.bins.get(id).map(|b| {
-            BinSummary {
-                id: id.to_owned(),
-                request_count: b.len(),
-            }
-        })
+                                  BinSummary {
+                                      id: id.to_owned(),
+                                      request_count: b.len(),
+                                  }
+                              })
     }
 
     fn get_bin_summaries(&self) -> HashMap<Id, BinSummary> {
@@ -116,7 +116,6 @@ impl Bins for InMemoryBins {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use super::super::models::*;
     use std::collections::HashMap;
 
     #[test]

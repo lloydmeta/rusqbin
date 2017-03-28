@@ -2,6 +2,10 @@ extern crate rusqbin;
 extern crate hyper;
 extern crate clap;
 
+#[macro_use]
+extern crate log;
+extern crate env_logger;
+
 use hyper::server::Listening;
 use rusqbin::server::BinsServer;
 use rusqbin::storage::InMemoryBins;
@@ -22,21 +26,26 @@ Send:
 
 In any other case, send requests with a X-Rusqbin-Id header with a
 bin_id to have your requests logged to a bin for later retrieval.
+
+Logging is handled by env_logger, so you can configure verbosity of
+logging output by setting the RUST_LOG environment variable.
 "#;
 
 
 fn main() {
+
+    env_logger::init().unwrap();
 
     let matches = App::new("rusqbin-server")
         .version(&version()[..])
         .author("Lloyd (github.com/lloydmeta)")
         .about("requestb.in in Rust")
         .arg(Arg::with_name("port")
-            .short("p")
-            .default_value(DEFAULT_PORT_STR)
-            .help("Sets the port for your sever")
-            .required(false)
-            .index(1))
+                 .short("p")
+                 .default_value(DEFAULT_PORT_STR)
+                 .help("Sets the port for your sever")
+                 .required(false)
+                 .index(1))
         .get_matches();
 
     match matches.value_of("port") {
@@ -45,7 +54,7 @@ fn main() {
             start_on_port(port)
         }
         None => {
-            print!("\nUsing default port {}", DEFAULT_PORT_STR);
+            info!("\nUsing default port {}", DEFAULT_PORT_STR);
             start_on_port(DEFAULT_PORT)
         }
     }

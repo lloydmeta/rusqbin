@@ -20,7 +20,11 @@ use common::*;
 #[test]
 fn test_list_empty() {
     run_with_server(|test_env| {
-        let ref bins = test_env.server.storage.lock().unwrap().get_bin_summaries();
+        let ref bins = test_env.server
+            .storage
+            .lock()
+            .unwrap()
+            .get_bin_summaries();
         assert!(bins.is_empty());
     })
 }
@@ -30,7 +34,10 @@ fn test_list_empty() {
 fn test_creating_bin() {
     run_with_server(|test_env| {
         let bin = test_env.create_bin().unwrap();
-        let ref storage = test_env.server.storage.lock().unwrap();
+        let ref storage = test_env.server
+            .storage
+            .lock()
+            .unwrap();
         assert!(storage.get_bin_summary(&bin.id).is_some());
     })
 }
@@ -40,7 +47,10 @@ fn test_deleting_existing_bin() {
     run_with_server(|test_env| {
         let bin = test_env.create_bin().unwrap();
         let _deleted = test_env.delete_bin(&bin.id).unwrap();
-        let ref storage = test_env.server.storage.lock().unwrap();
+        let ref storage = test_env.server
+            .storage
+            .lock()
+            .unwrap();
         assert!(storage.get_bin_summary(&bin.id).is_none());
     })
 }
@@ -71,7 +81,10 @@ fn test_requesting_bin_summary() {
                             }];
         test_env.parallel_requests(&bin_id, &requests, 2);
 
-        let ref storage = test_env.server.storage.lock().unwrap();
+        let ref storage = test_env.server
+            .storage
+            .lock()
+            .unwrap();
         let bin_summary: BinSummary = storage.get_bin_summary(&bin_id).unwrap();
         assert_eq!(bin_summary.request_count, requests.len() * 2);
     })
@@ -99,7 +112,10 @@ fn test_requesting_bin_requests() {
                             }];
         test_env.parallel_requests(&bin_id, &requests, 1);
 
-        let ref storage = test_env.server.storage.lock().unwrap();
+        let ref storage = test_env.server
+            .storage
+            .lock()
+            .unwrap();
         let requests: &Vec<Request> = storage.get_bin(&bin_id).unwrap();
         assert_eq!(requests.len(), 1);
 

@@ -42,23 +42,27 @@ impl TestEnv {
 
     pub fn create_bin(&self) -> Result<BinSummary, Box<Error>> {
         let path = format!("{}/rusqbins", self.base_uri());
-        let mut resp: Response = self.client().post(&*path).send()?;
+        let mut resp: Response = self.client()
+            .post(&*path)
+            .send()?;
         let mut string = String::new();
         let _ = resp.read_to_string(&mut string)?;
         Ok(json::decode(&*string)?)
     }
 
     pub fn get_bin_summary(&self, bin_id: &Id) -> Result<BinSummary, Box<Error>> {
-        let mut summary_resp: Response =
-            self.client().get(&*format!("{}/rusqbins/{}", self.base_uri(), bin_id)).send()?;
+        let mut summary_resp: Response = self.client()
+            .get(&*format!("{}/rusqbins/{}", self.base_uri(), bin_id))
+            .send()?;
         let mut summary_string = String::new();
         let _ = summary_resp.read_to_string(&mut summary_string)?;
         Ok(json::decode(&*summary_string)?)
     }
 
     pub fn delete_bin(&self, bin_id: &Id) -> Result<bool, Box<Error>> {
-        let resp: Response =
-            self.client().delete(&*format!("{}/rusqbins/{}", self.base_uri(), bin_id)).send()?;
+        let resp: Response = self.client()
+            .delete(&*format!("{}/rusqbins/{}", self.base_uri(), bin_id))
+            .send()?;
         Ok(resp.status == StatusCode::Ok)
     }
 

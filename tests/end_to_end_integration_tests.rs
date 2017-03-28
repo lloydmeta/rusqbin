@@ -31,7 +31,10 @@ fn test_start_and_stop() {
 fn test_list_empty() {
     run_with_server(|test_env| {
         let path = format!("{}/rusqbins", test_env.base_uri());
-        let mut resp: Response = test_env.client().get(&*path).send().unwrap();
+        let mut resp: Response = test_env.client()
+            .get(&*path)
+            .send()
+            .unwrap();
 
         let mut string = String::new();
         let _ = resp.read_to_string(&mut string).unwrap();
@@ -46,7 +49,10 @@ fn test_getting_non_existent_bin() {
     run_with_server(|test_env| {
         let path = format!("{}/rusqbins/5579fcd5-8353-4072-bb80-2d63a49c7ced",
                            test_env.base_uri());
-        let resp: Response = test_env.client().get(&*path).send().unwrap();
+        let resp: Response = test_env.client()
+            .get(&*path)
+            .send()
+            .unwrap();
 
         assert_eq!(resp.status, StatusCode::NotFound);
     })
@@ -55,26 +61,26 @@ fn test_getting_non_existent_bin() {
 #[test]
 fn test_creating_bin() {
     run_with_server(|test_env| {
-        let bin = test_env.create_bin();
-        assert_eq!(bin.is_ok(), true);
-    })
+                        let bin = test_env.create_bin();
+                        assert_eq!(bin.is_ok(), true);
+                    })
 }
 
 #[test]
 fn test_deleting_non_existing_bin() {
     run_with_server(|test_env| {
-        let deleted = test_env.delete_bin(&Id::random()).unwrap();
-        assert!(!deleted);
-    })
+                        let deleted = test_env.delete_bin(&Id::random()).unwrap();
+                        assert!(!deleted);
+                    })
 }
 
 #[test]
 fn test_deleting_existing_bin() {
     run_with_server(|test_env| {
-        let bin = test_env.create_bin().unwrap();
-        let deleted = test_env.delete_bin(&bin.id).unwrap();
-        assert!(deleted);
-    })
+                        let bin = test_env.create_bin().unwrap();
+                        let deleted = test_env.delete_bin(&bin.id).unwrap();
+                        assert!(deleted);
+                    })
 }
 
 #[test]

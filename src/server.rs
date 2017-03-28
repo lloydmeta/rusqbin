@@ -63,34 +63,36 @@ impl<T> Handler for Worker<T>
     // Req is a mutable reference because we need to mutate it for reading
     fn handle(&self, mut req: Request, res: Response) {
         // From https://github.com/hyperium/hyper/blob/0.9.x/examples/server.rs
-        let handling_result: Result<(), Error> = {
-            let req_uri = req.uri.clone();
-            match req_uri {
-                AbsolutePath(ref path) => {
-                    match (&req.method, &path[..]) {
-                        (&Get, _) if self.extract_id_from_bin_summary_path(&path)
-                            .is_some() => self.find_bin_summary(&path, res),
-                        (&Delete, _) if self.extract_id_from_bin_summary_path(&path)
-                            .is_some() => self.delete_bin(&path, res),
-                        (&Get, _) if self.extract_id_from_bin_requests_path(&path)
-                            .is_some() => self.find_bin_requests(&path, res),
-                        (&Get, "/rusqbins") |
-                        (&Get, "/rusqbins/") => self.list_bins(res),
-                        (&Post, "/rusqbins") |
-                        (&Post, "/rusqbins/") => self.create_bin(res),
-                        _ if self.extract_id_from_header(&req.headers).is_some() => {
-                            self.insert_request(&mut req, res)
+        let handling_result: Result<(), Error> =
+            {
+                let req_uri = req.uri.clone();
+                match req_uri {
+                    AbsolutePath(ref path) => {
+                        match (&req.method, &path[..]) {
+                            (&Get, _) if self.extract_id_from_bin_summary_path(&path).is_some() => {
+                                self.find_bin_summary(&path, res)
+                            }
+                            (&Delete, _) if self.extract_id_from_bin_summary_path(&path)
+                                                .is_some() => self.delete_bin(&path, res),
+                            (&Get, _) if self.extract_id_from_bin_requests_path(&path)
+                                             .is_some() => self.find_bin_requests(&path, res),
+                            (&Get, "/rusqbins") |
+                            (&Get, "/rusqbins/") => self.list_bins(res),
+                            (&Post, "/rusqbins") |
+                            (&Post, "/rusqbins/") => self.create_bin(res),
+                            _ if self.extract_id_from_header(&req.headers).is_some() => {
+                                self.insert_request(&mut req, res)
+                            }
+                            _ => bad_request(res),
                         }
-                        _ => bad_request(res),
                     }
+                    _ => bad_request(res),
                 }
-                _ => bad_request(res),
-            }
-        };
+            };
         match handling_result {
             Err(Error::PoisonedLock) => panic!("Yo. Mutex got poisoned. Now wut?"),
-            Err(e) => println!("Something really messed up bad: {:?}", e),
-            _ => (),
+            Err(e) => error!("Something really messed up bad: {:?}", e),
+            _ => debug!("Request handled fine")
         }
     }
 }
@@ -110,8 +112,7 @@ impl<T> Worker<T>
     }
 
     fn extract_id_from_header<'a>(&'a self, headers: &'a Headers) -> Option<Id> {
-        headers.get::<XRusqBinId>()
-            .and_then(|s| self.id_extractor.parse(s))
+        headers.get::<XRusqBinId>().and_then(|s| self.id_extractor.parse(s))
     }
     // Routing-related helper functions -->
 
@@ -120,15 +121,23 @@ impl<T> Worker<T>
     fn create_bin(&self, res: Response) -> Result<(), Error> {
         let mut cont = self.bins.lock()?;
         let new_bin = cont.create_bin();
+        info!("Created a new bin {:?}", new_bin);
         write_json(&new_bin, res)
     }
 
     fn delete_bin(&self, path: &String, res: Response) -> Result<(), Error> {
         if let Some(id) = self.extract_id_from_bin_summary_path(path) {
+            debug!("Trying to delete a bin with id: {}", id);
             let mut cont = self.bins.lock()?;
             match cont.delete_bin(&id) {
-                DeleteBinStatus::Ok => ok(res),
-                DeleteBinStatus::NoSuchBin => not_found(res),
+                DeleteBinStatus::Ok => {
+                    info!("Deleted bin with id: {}", id);
+                    ok(res)
+                }
+                DeleteBinStatus::NoSuchBin => {
+                    info!("No bin with id: {}", id);
+                    not_found(res)
+                }
             }
         } else {
             // this methods should not be invoked if extraction isn't successful
@@ -139,15 +148,23 @@ impl<T> Worker<T>
     fn list_bins(&self, res: Response) -> Result<(), Error> {
         let cont = self.bins.lock()?;
         let all = &cont.get_bin_summaries();
+        info!("Retrieved all bins: {:?}", all);
         write_json(all, res)
     }
 
     fn find_bin_summary(&self, path: &String, res: Response) -> Result<(), Error> {
         if let Some(id) = self.extract_id_from_bin_summary_path(path) {
+            debug!("Trying to find a bin with id: {}", id);
             let cont = self.bins.lock()?;
             match cont.get_bin_summary(&id) {
-                Some(bin) => write_json(&bin, res),
-                None => not_found(res),
+                Some(ref bin) => {
+                    info!("Retrieved bin summary: {:?}", bin);
+                    write_json(bin, res)
+                }
+                None => {
+                    info!("No bin with that id: {}", id);
+                    not_found(res)
+                }
             }
         } else {
             // this methods should not be invoked if extraction isn't successful
@@ -157,10 +174,17 @@ impl<T> Worker<T>
 
     fn find_bin_requests(&self, path: &String, res: Response) -> Result<(), Error> {
         if let Some(id) = self.extract_id_from_bin_requests_path(path) {
+            debug!("Trying to find a bin with id: {} ", id);
             let cont = self.bins.lock()?;
             match cont.get_bin(&id) {
-                Some(bin) => write_json(bin, res),
-                None => not_found(res),
+                Some(ref bin) => {
+                    info!("Retrieved bin: {:?}", bin);
+                    write_json(bin, res)
+                }
+                None => {
+                    info!("No bin with that id: {}", id);
+                    not_found(res)
+                }
             }
         } else {
             // this methods should not be invoked if extraction isn't successful
@@ -170,12 +194,20 @@ impl<T> Worker<T>
 
     fn insert_request(&self, req: &mut Request, res: Response) -> Result<(), Error> {
         let now = time::get_time();
+        debug!("Insert time: {:?}", now);
         let now_millis = (now.sec as i64 * 1000) + (now.nsec as i64 / 1000 / 1000);
+        debug!("Insert time in Epoch millis: {:?}", now_millis);
         if let Some(id) = self.extract_id_from_header(&req.headers.clone()) {
             let mut cont = self.bins.lock()?;
             match cont.insert_request(&id, build_models_request(now_millis, req)?) {
-                InsertRequestStatus::Ok => ok(res),
-                _ => not_found(res),
+                InsertRequestStatus::Ok => {
+                    info!("Successfully inserted a request into bin with id: {}", id);
+                    ok(res)
+                }
+                _ => {
+                    info!("No bin with that id: {}", id);
+                    not_found(res)
+                }
             }
         } else {
             // this methods should not be invoked if extraction isn't successful
@@ -239,15 +271,15 @@ fn build_models_request(req_time: i64, req: &mut Request) -> Result<models::Requ
     }
 
     Ok(models::Request {
-        content_length: content_length,
-        content_type: content_type,
-        time: req_time,
-        method: method,
-        path: path,
-        body: body,
-        headers: headers,
-        query_string: query_map,
-    })
+           content_length: content_length,
+           content_type: content_type,
+           time: req_time,
+           method: method,
+           path: path,
+           body: body,
+           headers: headers,
+           query_string: query_map,
+       })
 }
 
 impl<T> BinsServer<T>

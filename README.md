@@ -28,6 +28,9 @@ and follow the simple usage instructions. The port the server runs on can be set
 
 ![Binary usage demo](https://raw.githubusercontent.com/lloydmeta/rusqbin/master/demo.gif)
 
+Logging is handled by [`env_logger`](https://github.com/rust-lang-nursery/log), so you can configure it at runtime using
+a `RUST_LOG` environment variable.
+
 ### Library
 
 To use it as a library, add it to your project as [a crate dependency](https://crates.io/crates/rusqbin), then from within Rust code:

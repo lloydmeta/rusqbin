@@ -72,6 +72,9 @@ extern crate regex;
 extern crate time;
 extern crate url;
 
+#[macro_use]
+extern crate log;
+
 pub mod models;
 pub mod storage;
 pub mod server;
