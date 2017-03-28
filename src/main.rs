@@ -2,6 +2,10 @@ extern crate rusqbin;
 extern crate hyper;
 extern crate clap;
 
+#[macro_use]
+extern crate log;
+extern crate env_logger;
+
 use hyper::server::Listening;
 use rusqbin::server::BinsServer;
 use rusqbin::storage::InMemoryBins;
@@ -28,6 +32,8 @@ bin_id to have your requests logged to a bin for later retrieval.
 
 fn main() {
 
+    env_logger::init().unwrap();
+
     let matches = App::new("rusqbin-server")
         .version(&version()[..])
         .author("Lloyd (github.com/lloydmeta)")
@@ -46,7 +52,7 @@ fn main() {
             start_on_port(port)
         }
         None => {
-            print!("\nUsing default port {}", DEFAULT_PORT_STR);
+            info!("\nUsing default port {}", DEFAULT_PORT_STR);
             start_on_port(DEFAULT_PORT)
         }
     }
