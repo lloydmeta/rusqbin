@@ -13,10 +13,11 @@ Rusdocs are published for:
 
 The web server has the following API for dealing with request bins.
 
-  - `POST`    /rusqbins                 To create a bin and get back bin_id
-  - `GET`     /rusqbins                 To list bin summaries
-  - `GET`     /rusqbins/${bin_id}       To get bin-specific information (lists all requests in the bin)
-  - `DELETE`  /rusqbins/${bin_id}       To delete a bin
+  - `POST`    /rusqbins                    To create a bin and get back bin_id
+  - `GET`     /rusqbins                    To list bin summaries
+  - `GET`     /rusqbins/${bin_id}          To get bin-specific information (lists all requests in the bin)
+  - `GET`     /rusqbins/${bin_id}/requests To get detailed request information for a bin
+  - `DELETE`  /rusqbins/${bin_id}          To delete a bin
 
 In any other case, send requests with a X-Rusqbin-Id header with a
 bin_id to have your requests logged to a bin for later retrieval.

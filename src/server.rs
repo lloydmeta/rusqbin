@@ -92,7 +92,7 @@ impl<T> Handler for Worker<T>
         match handling_result {
             Err(Error::PoisonedLock) => panic!("Yo. Mutex got poisoned. Now wut?"),
             Err(e) => error!("Something really messed up bad: {:?}", e),
-            _ => debug!("Request handled fine")
+            _ => debug!("Request handled fine"),
         }
     }
 }
