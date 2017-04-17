@@ -15,8 +15,8 @@ The web server has the following API for dealing with request bins.
 
   - `POST`    /rusqbins                    To create a bin and get back bin_id
   - `GET`     /rusqbins                    To list bin summaries
-  - `GET`     /rusqbins/${bin_id}          To get bin-specific information (lists all requests in the bin)
-  - `GET`     /rusqbins/${bin_id}/requests To get detailed request information for a bin
+  - `GET`     /rusqbins/${bin_id}          To get bin-specific summary information
+  - `GET`     /rusqbins/${bin_id}/requests To get detailed request information for a bin (lists all requests in the bin)
   - `DELETE`  /rusqbins/${bin_id}          To delete a bin
 
 In any other case, send requests with a X-Rusqbin-Id header with a
@@ -48,7 +48,7 @@ use rustc_serialize::json;
 use hyper::client::Client;
 use std::io::Read;
 
-// Start a BinsServer on port 9000
+// Start a BinsServer on port 7000
 let s = BinsServer::new(7000, InMemoryBins::new());
 let mut l = s.start().unwrap();
 
