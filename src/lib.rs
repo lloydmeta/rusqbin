@@ -14,7 +14,7 @@
 //! In any other case, send requests with a X-Rusqbin-Id header with a bin_id to have your requests
 //! logged to a bin for later retrieval.
 //!
-//! To use it as a binary, simply install it using `cargo install rusqbin` and then `rusqbin-server`,
+//! To use it as a binary, simply install it using `cargo install rusqbin` and then `rusqbin`,
 //! and follow the simple usage instructions.
 //!
 //! To use it as a library from within Rust code:

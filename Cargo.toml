@@ -1,6 +1,6 @@
 [package]
 name = "rusqbin"
-version = "0.1.10"
+version = "0.1.11"
 authors = [ "Lloyd <lloydmeta@gmail.com>" ]
 description = "Rusqbin is a web server that stashes your requests for later retrieval so you can do end-to-end testing of code that makes HTTP calls. It is available as both a binary and a library."
 license = "MIT"
@@ -20,7 +20,7 @@ log = "0.3"
 env_logger = "0.3"
 
 [[bin]]
-name = "rusqbin-server"
+name = "rusqbin"
 test = false
 doc = false
 

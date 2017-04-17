@@ -34,7 +34,7 @@ fn main() {
 
     env_logger::init().unwrap();
 
-    let matches = App::new("rusqbin-server")
+    let matches = App::new("rusqbin")
         .version(&version()[..])
         .author("Lloyd (github.com/lloydmeta)")
         .about("requestb.in in Rust")
