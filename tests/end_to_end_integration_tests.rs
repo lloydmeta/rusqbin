@@ -1,7 +1,7 @@
 #[macro_use]
 extern crate hyper;
 extern crate rusqbin;
-extern crate rustc_serialize;
+extern crate serde_json;
 
 use self::rusqbin::models::BinSummary;
 
@@ -9,7 +9,6 @@ use hyper::client::Response;
 use hyper::status::StatusCode;
 use hyper::header::{Headers, Header};
 use hyper::method::Method;
-use rustc_serialize::json;
 
 use std::collections::HashMap;
 use std::io::Read;
@@ -38,7 +37,7 @@ fn test_list_empty() {
 
         let mut string = String::new();
         let _ = resp.read_to_string(&mut string).unwrap();
-        let decoded: HashMap<String, BinSummary> = json::decode(&*string).unwrap();
+        let decoded: HashMap<String, BinSummary> = serde_json::from_str(&*string).unwrap();
 
         assert_eq!(decoded.is_empty(), true);
     })

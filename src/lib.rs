@@ -22,18 +22,17 @@
 //! ```
 //! # extern crate rusqbin;
 //! # extern crate hyper;
-//! # extern crate rustc_serialize;
+//! # extern crate serde_json;
 //!
 //! use rusqbin::storage::*;
 //! use rusqbin::server::*;
 //! use rusqbin::models::*;
-//! use rustc_serialize::json;
 //! use hyper::client::Client;
 //! use std::io::Read;
 //!
 //! # fn main() {
 //!
-//! // Start a BinsServer on port 9000
+//! // Start a BinsServer on port 7000
 //! let s = BinsServer::new(7000, InMemoryBins::new());
 //! let mut l = s.start().unwrap();
 //!
@@ -43,7 +42,7 @@
 //! let mut resp = client.post("http://localhost:7000/rusqbins").send().unwrap();
 //! let mut string = String::new();
 //! let _ = resp.read_to_string(&mut string).unwrap();
-//! let bin: BinSummary = json::decode(&*string).unwrap();
+//! let bin: BinSummary = serde_json::from_str(&*string).unwrap();
 //! let bin_id = bin.id.value();
 //!
 //! // Fire an HTTP request with the proper X-Rusqbin-Id header
@@ -67,11 +66,15 @@
 //! [Requestbin](https://requestb.in/) written in Rust. Inspired by [Requestinator](https://github.com/DonMcNamara/requestinator)
 #[macro_use]
 extern crate hyper;
-extern crate rustc_serialize;
 extern crate uuid;
 extern crate regex;
 extern crate time;
 extern crate url;
+
+#[macro_use]
+extern crate serde_derive;
+extern crate serde;
+extern crate serde_json;
 
 #[macro_use]
 extern crate log;

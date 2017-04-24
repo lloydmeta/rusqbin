@@ -39,12 +39,11 @@ To use it as a library, add it to your project as [a crate dependency](https://c
 ```rust
 extern crate rusqbin;
 extern crate hyper;
-extern crate rustc_serialize;
+extern crate serde_json;
 
 use rusqbin::storage::*;
 use rusqbin::server::*;
 use rusqbin::models::*;
-use rustc_serialize::json;
 use hyper::client::Client;
 use std::io::Read;
 
@@ -58,7 +57,7 @@ let client = Client::new();
 let mut resp = client.post("http://localhost:7000/rusqbins").send().unwrap();
 let mut string = String::new();
 let _ = resp.read_to_string(&mut string).unwrap();
-let bin: BinSummary = json::decode(&*string).unwrap();
+let bin: BinSummary = serde_json::from_str(&*string).unwrap();
 let bin_id = bin.id.value();
 
 // Fire an HTTP request with the proper X-Rusqbin-Id header

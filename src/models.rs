@@ -16,7 +16,6 @@
 use std::collections::HashMap;
 
 use std::fmt;
-use rustc_serialize::{Encodable, Encoder, Decodable, Decoder};
 use uuid::Uuid;
 
 use regex::Regex;
@@ -46,7 +45,7 @@ const ID_REGEXP: &'static str =
 /// let nope = id_extractor.parse("lulz");
 /// assert_eq!(nope, None);
 /// ```
-#[derive(PartialEq, Debug, Eq, Hash, Clone)]
+#[derive(PartialEq, Debug, Eq, Hash, Clone, Serialize, Deserialize)]
 pub struct Id(String);
 
 impl Id {
@@ -91,18 +90,6 @@ impl IdExtractor {
     }
 }
 
-impl Encodable for Id {
-    fn encode<S: Encoder>(&self, s: &mut S) -> Result<(), S::Error> {
-        s.emit_str(&*self.0)
-    }
-}
-
-impl Decodable for Id {
-    fn decode<S: Decoder>(s: &mut S) -> Result<Id, S::Error> {
-        s.read_str().map(|s| Id(s.to_owned()))
-    }
-}
-
 impl fmt::Display for Id {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         write!(f, "{}", self.0)
@@ -110,7 +97,7 @@ impl fmt::Display for Id {
 }
 
 /// A record of an HTTP request made to the server.
-#[derive(PartialEq, Debug, Eq, RustcDecodable, RustcEncodable)]
+#[derive(PartialEq, Debug, Eq, Serialize, Deserialize)]
 pub struct Request {
     pub content_length: Option<u64>,
     pub content_type: Option<String>,
@@ -123,7 +110,7 @@ pub struct Request {
 }
 
 /// Summary of a Bin of requests.
-#[derive(PartialEq, Debug, Eq, RustcDecodable, RustcEncodable)]
+#[derive(PartialEq, Debug, Eq, Serialize, Deserialize)]
 pub struct BinSummary {
     pub id: Id,
     pub request_count: usize,
@@ -132,7 +119,7 @@ pub struct BinSummary {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use rustc_serialize::json;
+    use serde_json;
 
     #[test]
     fn test_idextractor_instantiation() {
@@ -142,8 +129,8 @@ mod tests {
     #[test]
     fn test_id_json_encoding_decoding() {
         let id = Id::random();
-        let encoded = json::encode(&id).unwrap();
-        let decoded: Id = json::decode(&*encoded).unwrap();
+        let encoded = serde_json::to_string_pretty(&id).unwrap();
+        let decoded: Id = serde_json::from_str(&*encoded).unwrap();
         assert_eq!(decoded, id);
         assert_eq!(format!("\"{}\"", id), encoded); // should be a raw JSON string, not wrapped in an object
     }

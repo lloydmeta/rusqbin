@@ -1,6 +1,6 @@
 extern crate rusqbin;
 extern crate hyper;
-extern crate rustc_serialize;
+extern crate serde_json;
 
 use self::rusqbin::server::XRusqBinId;
 use self::rusqbin::server::BinsServer;
@@ -14,7 +14,6 @@ use hyper::method::Method;
 use hyper::header::Headers;
 use hyper::status::StatusCode;
 use hyper::error::Error as HyperError;
-use rustc_serialize::json;
 
 use std::io::Read;
 use std::panic;
@@ -47,7 +46,7 @@ impl TestEnv {
             .send()?;
         let mut string = String::new();
         let _ = resp.read_to_string(&mut string)?;
-        Ok(json::decode(&*string)?)
+        Ok(serde_json::from_str(&*string)?)
     }
 
     pub fn get_bin_summary(&self, bin_id: &Id) -> Result<BinSummary, Box<Error>> {
@@ -56,7 +55,7 @@ impl TestEnv {
             .send()?;
         let mut summary_string = String::new();
         let _ = summary_resp.read_to_string(&mut summary_string)?;
-        Ok(json::decode(&*summary_string)?)
+        Ok(serde_json::from_str(&*summary_string)?)
     }
 
     pub fn delete_bin(&self, bin_id: &Id) -> Result<bool, Box<Error>> {
@@ -72,7 +71,7 @@ impl TestEnv {
             .send()?;
         let mut summary_string = String::new();
         let _ = summary_resp.read_to_string(&mut summary_string)?;
-        Ok(json::decode(&*summary_string)?)
+        Ok(serde_json::from_str(&*summary_string)?)
     }
 
     // Fires sets of 3 requests in parallel

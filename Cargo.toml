@@ -1,6 +1,6 @@
 [package]
 name = "rusqbin"
-version = "0.1.11"
+version = "0.1.12"
 authors = [ "Lloyd <lloydmeta@gmail.com>" ]
 description = "Rusqbin is a web server that stashes your requests for later retrieval so you can do end-to-end testing of code that makes HTTP calls. It is available as both a binary and a library."
 license = "MIT"
@@ -12,7 +12,9 @@ keywords = [ "http", "webserver", "requests", "testing", "log" ]
 hyper = "0.10"
 time = "0.1"
 clap = "2.21.2"
-rustc-serialize = "0.3.23"
+serde = "1.0"
+serde_derive = "1.0"
+serde_json = "1.0"
 uuid = { version = "0.2", features = ["v4"] }
 regex = "0.2"
 url = "1.2.4"

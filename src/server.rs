@@ -22,8 +22,8 @@ use errors::*;
 
 use regex::Regex;
 
-use rustc_serialize::json;
-use rustc_serialize::Encodable;
+use serde::*;
+use serde_json;
 
 use time;
 
@@ -216,9 +216,8 @@ impl<T> Worker<T>
     }
 }
 
-fn write_json<T: Encodable>(t: &T, mut res: Response) -> Result<(), Error> {
-    let pretty = json::as_pretty_json(t);
-    let encoded = format!("{}", pretty);
+fn write_json<T: Serialize>(t: &T, mut res: Response) -> Result<(), Error> {
+    let encoded = serde_json::ser::to_string_pretty(t)?;
     res.headers_mut().set(ContentLength(encoded.len() as u64));
     res.headers_mut().set(ContentType("application/json".to_owned()));
     let mut res_start = res.start()?;

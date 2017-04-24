@@ -1,6 +1,6 @@
 //! Project-specific errors and From implementations to wrap errors from foreign modules.
 
-use rustc_serialize::json;
+use serde_json;
 use std::io;
 use hyper;
 use std::sync::PoisonError;
@@ -11,7 +11,7 @@ use url;
 #[derive(Debug)]
 pub enum Error {
     PoisonedLock,
-    JsonEncodingError(json::EncoderError),
+    JsonEncodingError(serde_json::Error),
     IOError(io::Error),
     RegexError(regex::Error),
     UrlParseError(url::ParseError),
@@ -25,8 +25,8 @@ impl<T> From<PoisonError<T>> for Error {
     }
 }
 
-impl From<json::EncoderError> for Error {
-    fn from(e: json::EncoderError) -> Self {
+impl From<serde_json::Error> for Error {
+    fn from(e: serde_json::Error) -> Self {
         Error::JsonEncodingError(e)
     }
 }

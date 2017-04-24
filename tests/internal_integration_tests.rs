@@ -1,7 +1,7 @@
 #[macro_use]
 extern crate hyper;
 extern crate rusqbin;
-extern crate rustc_serialize;
+extern crate serde_json;
 
 use self::rusqbin::models::BinSummary;
 
