@@ -27,7 +27,7 @@ bin_id to have your requests logged to a bin for later retrieval.
 To use Rusqbin as a binary, simply install it using `cargo install rusqbin` and then run `rusqbin`,
 and follow the simple usage instructions. The port the server runs on can be set by optionally adding a port argument.
 
-![Binary usage demo](https://raw.githubusercontent.com/lloydmeta/rusqbin/master/demo.gif)
+![Binary usage demo](https://raw.githubusercontent.com/lloydmeta/rusqbin/master/rusqbin-demo.gif)
 
 Logging is handled by [`env_logger`](https://github.com/rust-lang-nursery/log), so you can configure it at runtime using
 a `RUST_LOG` environment variable.
