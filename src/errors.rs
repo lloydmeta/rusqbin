@@ -6,6 +6,7 @@ use hyper;
 use std::sync::PoisonError;
 use regex;
 use url;
+use std::net;
 
 /// Project-specfic error enum.
 #[derive(Debug)]
@@ -17,6 +18,9 @@ pub enum Error {
     UrlParseError(url::ParseError),
     UnforeseenError,
     ServerError(hyper::Error),
+    AddressParsingErr(net::AddrParseError),
+    FromUtf8Error,
+    HyperError,
 }
 
 impl<T> From<PoisonError<T>> for Error {
@@ -52,5 +56,11 @@ impl From<url::ParseError> for Error {
 impl From<hyper::Error> for Error {
     fn from(e: hyper::Error) -> Self {
         Error::ServerError(e)
+    }
+}
+
+impl From<net::AddrParseError> for Error {
+    fn from(e: net::AddrParseError) -> Self {
+        Error::AddressParsingErr(e)
     }
 }

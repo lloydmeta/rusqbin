@@ -6,7 +6,6 @@ extern crate clap;
 extern crate log;
 extern crate env_logger;
 
-use hyper::server::Listening;
 use rusqbin::server::BinsServer;
 use rusqbin::storage::InMemoryBins;
 use clap::{Arg, App};
@@ -61,10 +60,8 @@ fn main() {
 /// Starts a BinsServer on the given port with an InMemory database.
 fn start_on_port(p: usize) {
     let s = BinsServer::new(p, InMemoryBins::new());
-    let r = s.start();
-    let _l: Listening = r.unwrap();
-    println!("{}", GREET);
-    println!("\nServer started on {}", s.address)
+    println!("{}\n\n Server starting on {}", GREET, s.address);
+    s.run().unwrap()
 }
 
 fn version() -> String {

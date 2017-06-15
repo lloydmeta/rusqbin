@@ -5,13 +5,12 @@ extern crate serde_json;
 
 use self::rusqbin::models::BinSummary;
 
-use hyper::client::Response;
-use hyper::status::StatusCode;
+use hyper::client::Request as HyperRequest;
+use hyper::StatusCode;
 use hyper::header::{Headers, Header};
-use hyper::method::Method;
+use hyper::Method;
 
 use std::collections::HashMap;
-use std::io::Read;
 
 use rusqbin::models::{Request, Id};
 
@@ -28,15 +27,12 @@ fn test_start_and_stop() {
 
 #[test]
 fn test_list_empty() {
-    run_with_server(|test_env| {
-        let path = format!("{}/rusqbins", test_env.base_uri());
-        let mut resp: Response = test_env.client()
-            .get(&*path)
-            .send()
-            .unwrap();
+    run_with_server(|mut test_env| {
+        let req = HyperRequest::new(Method::Get,
+                                    test_env.to_uri(format!("{}/rusqbins", test_env.base_uri())));
+        let resp = test_env.with_client(|c| c.request(req));
 
-        let mut string = String::new();
-        let _ = resp.read_to_string(&mut string).unwrap();
+        let string = test_env.get_body(resp);
         let decoded: HashMap<String, BinSummary> = serde_json::from_str(&*string).unwrap();
 
         assert_eq!(decoded.is_empty(), true);
@@ -45,21 +41,19 @@ fn test_list_empty() {
 
 #[test]
 fn test_getting_non_existent_bin() {
-    run_with_server(|test_env| {
-        let path = format!("{}/rusqbins/5579fcd5-8353-4072-bb80-2d63a49c7ced",
-                           test_env.base_uri());
-        let resp: Response = test_env.client()
-            .get(&*path)
-            .send()
-            .unwrap();
+    run_with_server(|mut test_env| {
+                        let uri = test_env.to_uri(format!("{}/rusqbins/5579fcd5-8353-4072-bb80-2d63a49c7ced",
+                                                          test_env.base_uri()));
+                        let req = HyperRequest::new(Method::Get, uri);
+                        let resp = test_env.with_client(|c| c.request(req));
 
-        assert_eq!(resp.status, StatusCode::NotFound);
-    })
+                        assert_eq!(resp.status(), StatusCode::NotFound);
+                    })
 }
 
 #[test]
 fn test_creating_bin() {
-    run_with_server(|test_env| {
+    run_with_server(|mut test_env| {
                         let bin = test_env.create_bin();
                         assert_eq!(bin.is_ok(), true);
                     })
@@ -67,7 +61,7 @@ fn test_creating_bin() {
 
 #[test]
 fn test_deleting_non_existing_bin() {
-    run_with_server(|test_env| {
+    run_with_server(|mut test_env| {
                         let deleted = test_env.delete_bin(&Id::random()).unwrap();
                         assert!(!deleted);
                     })
@@ -75,7 +69,7 @@ fn test_deleting_non_existing_bin() {
 
 #[test]
 fn test_deleting_existing_bin() {
-    run_with_server(|test_env| {
+    run_with_server(|mut test_env| {
                         let bin = test_env.create_bin().unwrap();
                         let deleted = test_env.delete_bin(&bin.id).unwrap();
                         assert!(deleted);
@@ -84,7 +78,7 @@ fn test_deleting_existing_bin() {
 
 #[test]
 fn test_requesting_bin_summary() {
-    run_with_server(|test_env| {
+    run_with_server(|mut test_env| {
         let new_bin = test_env.create_bin().unwrap();
         let bin_id = new_bin.id;
 
@@ -119,7 +113,7 @@ header! { (XDoodle, "X-Doodle") => [String] }
 
 #[test]
 fn test_requesting_bin_requests() {
-    run_with_server(|test_env| {
+    run_with_server(|mut test_env| {
         let new_bin = test_env.create_bin().unwrap();
         let bin_id = new_bin.id;
 
@@ -142,8 +136,12 @@ fn test_requesting_bin_requests() {
         println!("{:?}", req.headers);
         assert_eq!(req.headers.len(), 5); // includes content-length, host, XRusqbinId, and the 2 additional ones we sent.
 
-        assert!(req.headers.get(<XFlubble as Header>::header_name()).is_some());
-        assert!(req.headers.get(<XDoodle as Header>::header_name()).is_some());
+        assert!(req.headers
+                    .get(<XFlubble as Header>::header_name())
+                    .is_some());
+        assert!(req.headers
+                    .get(<XDoodle as Header>::header_name())
+                    .is_some());
 
         assert_eq!(req.body, Some("hey there.".to_owned()));
         assert_eq!(req.method, Method::Post.as_ref());

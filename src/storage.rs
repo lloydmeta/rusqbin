@@ -78,12 +78,14 @@ impl Bins for InMemoryBins {
     }
 
     fn get_bin_summary(&self, id: &Id) -> Option<BinSummary> {
-        self.bins.get(id).map(|b| {
-                                  BinSummary {
-                                      id: id.to_owned(),
-                                      request_count: b.len(),
-                                  }
-                              })
+        self.bins
+            .get(id)
+            .map(|b| {
+                     BinSummary {
+                         id: id.to_owned(),
+                         request_count: b.len(),
+                     }
+                 })
     }
 
     fn get_bin_summaries(&self) -> HashMap<Id, BinSummary> {
