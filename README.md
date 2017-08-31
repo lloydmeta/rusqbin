@@ -22,6 +22,10 @@ The web server has the following API for dealing with request bins.
 In any other case, send requests with a X-Rusqbin-Id header with a
 bin_id to have your requests logged to a bin for later retrieval.
 
+### Docker
+
+`$ docker run lloydmeta/rusqbin:latest`
+
 ### Binary
 
 To use Rusqbin as a binary, simply install it using `cargo install rusqbin` and then run `rusqbin`,
