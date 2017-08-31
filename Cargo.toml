@@ -1,6 +1,6 @@
 [package]
 name = "rusqbin"
-version = "0.2.0"
+version = "0.2.1"
 authors = [ "Lloyd <lloydmeta@gmail.com>" ]
 description = "Rusqbin is a web server that stashes your requests for later retrieval so you can do end-to-end testing of code that makes HTTP calls. It is available as both a binary and a library."
 license = "MIT"
