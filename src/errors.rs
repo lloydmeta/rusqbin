@@ -7,6 +7,10 @@ use std::sync::PoisonError;
 use regex;
 use url;
 
+use std::error::Error as StdErr;
+use std::fmt;
+use std::fmt::Display;
+
 /// Project-specfic error enum.
 #[derive(Debug)]
 pub enum Error {
@@ -18,6 +22,51 @@ pub enum Error {
     UnforeseenError,
     ServerError(hyper::Error),
 }
+
+impl Display for Error {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        // Use `self.number` to refer to each positional data point.
+        use self::Error::*;
+        match self {
+            &PoisonedLock => write!(f, "Poisoned lock error"),
+            &UnforeseenError => write!(f, "Unforeseen error"),
+            &JsonEncodingError(ref e) => e.fmt(f),
+            &IOError(ref e) => e.fmt(f),
+            &RegexError(ref e) => e.fmt(f),
+            &UrlParseError(ref e) => e.fmt(f),
+            &ServerError(ref e) => e.fmt(f),
+        }
+    }
+}
+
+impl StdErr for Error {
+    fn description(&self) -> &str {
+        use self::Error::*;
+        match self {
+            &PoisonedLock => "Poisoned Lock",
+            &UnforeseenError => "Unforeseen Error",
+            &JsonEncodingError(ref e) => e.description(),
+            &IOError(ref e) => e.description(),
+            &RegexError(ref e) => e.description(),
+            &UrlParseError(ref e) => e.description(),
+            &ServerError(ref e) => e.description(),
+        }
+    }
+
+    fn cause(&self) -> Option<&StdErr> {
+        use self::Error::*;
+        match self {
+            &PoisonedLock => None,
+            &UnforeseenError => None,
+            &JsonEncodingError(ref e) => Some(e),
+            &IOError(ref e) => Some(e),
+            &RegexError(ref e) => Some(e),
+            &UrlParseError(ref e) => Some(e),
+            &ServerError(ref e) => Some(e),
+        }
+    }
+}
+
 
 impl<T> From<PoisonError<T>> for Error {
     fn from(_: PoisonError<T>) -> Self {

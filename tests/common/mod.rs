@@ -41,9 +41,7 @@ impl TestEnv {
 
     pub fn create_bin(&self) -> Result<BinSummary, Box<Error>> {
         let path = format!("{}/rusqbins", self.base_uri());
-        let mut resp: Response = self.client()
-            .post(&*path)
-            .send()?;
+        let mut resp: Response = self.client().post(&*path).send()?;
         let mut string = String::new();
         let _ = resp.read_to_string(&mut string)?;
         Ok(serde_json::from_str(&*string)?)
@@ -67,7 +65,11 @@ impl TestEnv {
 
     pub fn get_bin_requests(&self, bin_id: &Id) -> Result<Vec<Request>, Box<Error>> {
         let mut summary_resp: Response = self.client()
-            .get(&*format!("{}/rusqbins/{}/requests", self.base_uri(), bin_id))
+            .get(&*format!(
+                "{}/rusqbins/{}/requests",
+                self.base_uri(),
+                bin_id
+            ))
             .send()?;
         let mut summary_string = String::new();
         let _ = summary_resp.read_to_string(&mut summary_string)?;
@@ -75,15 +77,17 @@ impl TestEnv {
     }
 
     // Fires sets of 3 requests in parallel
-    pub fn parallel_requests(&self,
-                             bin_id: &Id,
-                             requests: &Vec<ServerRequest>,
-                             sets: usize)
-                             -> Arc<Mutex<Vec<Result<Response, HyperError>>>> {
+    pub fn parallel_requests(
+        &self,
+        bin_id: &Id,
+        requests: &Vec<ServerRequest>,
+        sets: usize,
+    ) -> Arc<Mutex<Vec<Result<Response, HyperError>>>> {
         let mut threads = vec![];
 
 
-        let req_results: Arc<Mutex<Vec<Result<Response, HyperError>>>> = Arc::new(Mutex::new(vec![]));
+        let req_results: Arc<Mutex<Vec<Result<Response, HyperError>>>> =
+            Arc::new(Mutex::new(vec![]));
         for _ in 0..sets {
             for r in requests.iter() {
                 // Avoid closing over the request, because headers is itself not thread safe
@@ -142,7 +146,8 @@ pub struct ServerRequest<'a> {
 /// and from it to get end-to-end testing.
 ///
 pub fn run_with_server<T>(test: T) -> ()
-    where T: FnOnce(TestEnv) -> () + panic::UnwindSafe
+where
+    T: FnOnce(TestEnv) -> () + panic::UnwindSafe,
 {
     let mut p: usize = PORT_NUM.fetch_add(1, Ordering::SeqCst);
     while p < 5000 {

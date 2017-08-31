@@ -11,7 +11,7 @@ keywords = [ "http", "webserver", "requests", "testing", "log" ]
 [dependencies]
 hyper = "0.10"
 time = "0.1"
-clap = "2.21.2"
+clap = "2.26"
 serde = "1.0"
 serde_derive = "1.0"
 serde_json = "1.0"
@@ -20,6 +20,7 @@ regex = "0.2"
 url = "1.2.4"
 log = "0.3"
 env_logger = "0.3"
+openssl-probe = "0.1"
 
 [[bin]]
 name = "rusqbin"
@@ -28,3 +29,8 @@ doc = false
 
 [badges]
 travis-ci = { repository = "lloydmeta/rusqbin" }
+
+[profile.release]
+opt-level = 3
+debug = false
+lto = true

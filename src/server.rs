@@ -36,7 +36,8 @@ const BIN_REQUESTS_PATH_REGEXP: &'static str =
 
 /// Holds details about the current running server
 pub struct BinsServer<T>
-    where T: Bins + Send + 'static
+where
+    T: Bins + Send + 'static,
 {
     pub address: String,
     pub port: usize,
@@ -46,7 +47,8 @@ pub struct BinsServer<T>
 /// A Worker handles requests on the server and holds on to some
 /// state, which enables it to do its work efficiently.
 struct Worker<T>
-    where T: Bins
+where
+    T: Bins,
 {
     id_extractor: IdExtractor,
     bin_summary_path_regexp: Regex,
@@ -58,37 +60,39 @@ header! { (ContentType, "Content-Type") => [String] }
 header! { (XRusqBinId, "X-Rusqbin-Id") => [String] }
 
 impl<T> Handler for Worker<T>
-    where T: Bins + Send
+where
+    T: Bins + Send,
 {
     // Req is a mutable reference because we need to mutate it for reading
     fn handle(&self, mut req: Request, res: Response) {
         // From https://github.com/hyperium/hyper/blob/0.9.x/examples/server.rs
-        let handling_result: Result<(), Error> =
-            {
-                let req_uri = req.uri.clone();
-                match req_uri {
-                    AbsolutePath(ref path) => {
-                        match (&req.method, &path[..]) {
-                            (&Get, _) if self.extract_id_from_bin_summary_path(&path).is_some() => {
-                                self.find_bin_summary(&path, res)
-                            }
-                            (&Delete, _) if self.extract_id_from_bin_summary_path(&path)
-                                                .is_some() => self.delete_bin(&path, res),
-                            (&Get, _) if self.extract_id_from_bin_requests_path(&path)
-                                             .is_some() => self.find_bin_requests(&path, res),
-                            (&Get, "/rusqbins") |
-                            (&Get, "/rusqbins/") => self.list_bins(res),
-                            (&Post, "/rusqbins") |
-                            (&Post, "/rusqbins/") => self.create_bin(res),
-                            _ if self.extract_id_from_header(&req.headers).is_some() => {
-                                self.insert_request(&mut req, res)
-                            }
-                            _ => bad_request(res),
+        let handling_result: Result<(), Error> = {
+            let req_uri = req.uri.clone();
+            match req_uri {
+                AbsolutePath(ref path) => {
+                    match (&req.method, &path[..]) {
+                        (&Get, _) if self.extract_id_from_bin_summary_path(&path).is_some() => {
+                            self.find_bin_summary(&path, res)
                         }
+                        (&Delete, _) if self.extract_id_from_bin_summary_path(&path).is_some() => {
+                            self.delete_bin(&path, res)
+                        }
+                        (&Get, _) if self.extract_id_from_bin_requests_path(&path).is_some() => {
+                            self.find_bin_requests(&path, res)
+                        }
+                        (&Get, "/rusqbins") |
+                        (&Get, "/rusqbins/") => self.list_bins(res),
+                        (&Post, "/rusqbins") |
+                        (&Post, "/rusqbins/") => self.create_bin(res),
+                        _ if self.extract_id_from_header(&req.headers).is_some() => {
+                            self.insert_request(&mut req, res)
+                        }
+                        _ => bad_request(res),
                     }
-                    _ => bad_request(res),
                 }
-            };
+                _ => bad_request(res),
+            }
+        };
         match handling_result {
             Err(Error::PoisonedLock) => panic!("Yo. Mutex got poisoned. Now wut?"),
             Err(e) => error!("Something really messed up bad: {:?}", e),
@@ -98,21 +102,28 @@ impl<T> Handler for Worker<T>
 }
 
 impl<T> Worker<T>
-    where T: Bins
+where
+    T: Bins,
 {
     // <-- Routing-related helper functions
     fn extract_id_from_bin_summary_path<'a>(&'a self, s: &'a str) -> Option<Id> {
         let caps = self.bin_summary_path_regexp.captures(&*s);
-        caps.and_then(|c| c.get(1).and_then(|r| self.id_extractor.parse(r.as_str())))
+        caps.and_then(|c| {
+            c.get(1).and_then(|r| self.id_extractor.parse(r.as_str()))
+        })
     }
 
     fn extract_id_from_bin_requests_path<'a>(&'a self, s: &'a str) -> Option<Id> {
         let caps = self.bin_requests_path_regexp.captures(&*s);
-        caps.and_then(|c| c.get(1).and_then(|r| self.id_extractor.parse(r.as_str())))
+        caps.and_then(|c| {
+            c.get(1).and_then(|r| self.id_extractor.parse(r.as_str()))
+        })
     }
 
     fn extract_id_from_header<'a>(&'a self, headers: &'a Headers) -> Option<Id> {
-        headers.get::<XRusqBinId>().and_then(|s| self.id_extractor.parse(s))
+        headers.get::<XRusqBinId>().and_then(
+            |s| self.id_extractor.parse(s),
+        )
     }
     // Routing-related helper functions -->
 
@@ -219,7 +230,9 @@ impl<T> Worker<T>
 fn write_json<T: Serialize>(t: &T, mut res: Response) -> Result<(), Error> {
     let encoded = serde_json::ser::to_string_pretty(t)?;
     res.headers_mut().set(ContentLength(encoded.len() as u64));
-    res.headers_mut().set(ContentType("application/json".to_owned()));
+    res.headers_mut().set(
+        ContentType("application/json".to_owned()),
+    );
     let mut res_start = res.start()?;
     Ok(res_start.write_all(encoded.as_bytes())?)
 }
@@ -266,23 +279,26 @@ fn build_models_request(req_time: i64, req: &mut Request) -> Result<models::Requ
     let parsed_url: Url = Url::parse(&*format!("http://b.com{}", path))?;
     let mut query_map: HashMap<String, Vec<String>> = HashMap::new();
     for (k, v) in parsed_url.query_pairs() {
-        query_map.entry(k.into_owned()).or_insert(vec![]).push(v.into_owned());
+        query_map.entry(k.into_owned()).or_insert(vec![]).push(
+            v.into_owned(),
+        );
     }
 
     Ok(models::Request {
-           content_length: content_length,
-           content_type: content_type,
-           time: req_time,
-           method: method,
-           path: path,
-           body: body,
-           headers: headers,
-           query_string: query_map,
-       })
+        content_length: content_length,
+        content_type: content_type,
+        time: req_time,
+        method: method,
+        path: path,
+        body: body,
+        headers: headers,
+        query_string: query_map,
+    })
 }
 
 impl<T> BinsServer<T>
-    where T: Bins + Send + 'static
+where
+    T: Bins + Send + 'static,
 {
     pub fn new(port: usize, bins: T) -> BinsServer<T> {
         let address = format!("127.0.0.1:{}", port);

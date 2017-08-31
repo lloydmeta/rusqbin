@@ -79,21 +79,23 @@ impl Bins for InMemoryBins {
 
     fn get_bin_summary(&self, id: &Id) -> Option<BinSummary> {
         self.bins.get(id).map(|b| {
-                                  BinSummary {
-                                      id: id.to_owned(),
-                                      request_count: b.len(),
-                                  }
-                              })
+            BinSummary {
+                id: id.to_owned(),
+                request_count: b.len(),
+            }
+        })
     }
 
     fn get_bin_summaries(&self) -> HashMap<Id, BinSummary> {
         let mut map: HashMap<Id, BinSummary> = HashMap::new();
         for (k, b) in self.bins.iter() {
-            map.insert(k.to_owned(),
-                       BinSummary {
-                           id: k.to_owned(),
-                           request_count: b.len(),
-                       });
+            map.insert(
+                k.to_owned(),
+                BinSummary {
+                    id: k.to_owned(),
+                    request_count: b.len(),
+                },
+            );
         }
         map
     }
@@ -170,17 +172,19 @@ mod tests {
 
         let summary = bins.get_bin(&bin.id).unwrap();
         // Don't want to implement Clone in case we clone the requests by accident somewhere..
-        assert_eq!(summary[0],
-                   Request {
-                       content_length: None,
-                       content_type: Some("fake".to_owned()),
-                       time: 123,
-                       method: "GET".to_owned(),
-                       path: "/whoa".to_owned(),
-                       body: None,
-                       headers: HashMap::new(),
-                       query_string: HashMap::new(),
-                   })
+        assert_eq!(
+            summary[0],
+            Request {
+                content_length: None,
+                content_type: Some("fake".to_owned()),
+                time: 123,
+                method: "GET".to_owned(),
+                path: "/whoa".to_owned(),
+                body: None,
+                headers: HashMap::new(),
+                query_string: HashMap::new(),
+            }
+        )
     }
 
     #[test]
