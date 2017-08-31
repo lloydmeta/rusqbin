@@ -48,9 +48,10 @@ impl TestEnv {
     }
 
     pub fn with_client<F, Fut, I, E>(&mut self, f: F) -> I
-        where F: FnOnce(&Client<HttpConnector, Body>) -> Fut,
-              E: std::error::Error,
-              Fut: Future<Item = I, Error = E>
+    where
+        F: FnOnce(&Client<HttpConnector, Body>) -> Fut,
+        E: std::error::Error,
+        Fut: Future<Item = I, Error = E>,
     {
         let fut = f(&self.client());
         self.core.run(fut).unwrap()
@@ -87,29 +88,35 @@ impl TestEnv {
     }
 
     pub fn delete_bin(&mut self, bin_id: &Id) -> Result<bool, Box<Error>> {
-        let req =
-            HyperRequest::new(Method::Delete,
-                              Uri::from_str(&*format!("{}/rusqbins/{}", self.base_uri(), bin_id))?);
+        let req = HyperRequest::new(
+            Method::Delete,
+            Uri::from_str(&*format!("{}/rusqbins/{}", self.base_uri(), bin_id))?,
+        );
         let resp: Response = self.with_client(|c| c.request(req));
         Ok(resp.status() == StatusCode::Ok)
     }
 
     pub fn get_bin_requests(&mut self, bin_id: &Id) -> Result<Vec<Request>, Box<Error>> {
-        let req = HyperRequest::new(Method::Get,
-                                    Uri::from_str(&*format!("{}/rusqbins/{}/requests",
-                                                            self.base_uri(),
-                                                            bin_id))?);
+        let req = HyperRequest::new(
+            Method::Get,
+            Uri::from_str(&*format!(
+                "{}/rusqbins/{}/requests",
+                self.base_uri(),
+                bin_id
+            ))?,
+        );
         let summary_resp: Response = self.with_client(|c| c.request(req));
         let summary_string = self.get_body(summary_resp);
         Ok(serde_json::from_str(&*summary_string)?)
     }
 
     // Fires sets of 3 requests in parallel
-    pub fn parallel_requests(&mut self,
-                             bin_id: &Id,
-                             requests: &Vec<ServerRequest>,
-                             sets: usize)
-                             -> Vec<Response> {
+    pub fn parallel_requests(
+        &mut self,
+        bin_id: &Id,
+        requests: &Vec<ServerRequest>,
+        sets: usize,
+    ) -> Vec<Response> {
         let futures: Vec<FutureResponse> = (0..sets)
             .flat_map(|_| {
                 let f_reqs: Vec<FutureResponse> = requests
@@ -121,8 +128,8 @@ impl TestEnv {
                         let bin_id_clone = bin_id.to_owned();
                         let path = format!("{}{}", self.base_uri(), r.path);
 
-                        let mut request = HyperRequest::new(req_method,
-                                                            Uri::from_str(path.as_str()).unwrap());
+                        let mut request =
+                            HyperRequest::new(req_method, Uri::from_str(path.as_str()).unwrap());
                         if let Some(body) = req_body {
                             request.set_body(body);
                         }
@@ -155,7 +162,8 @@ pub struct ServerRequest<'a> {
 /// and from it to get end-to-end testing.
 ///
 pub fn run_with_server<T>(test: T) -> ()
-    where T: FnOnce(TestEnv) -> ()
+where
+    T: FnOnce(TestEnv) -> (),
 {
     let mut p: usize = PORT_NUM.fetch_add(1, Ordering::SeqCst);
     while p < 5000 {
@@ -167,12 +175,12 @@ pub fn run_with_server<T>(test: T) -> ()
     let s_spawn = s.clone();
     let running_spawn = still_running.clone();
     thread::spawn(move || {
-                      s_spawn.run_until(future::poll_fn(|| if *running_spawn.lock().unwrap() {
-                                                            Ok(futures::Async::NotReady)
-                                                        } else {
-                                                            Ok(futures::Async::Ready(()))
-                                                        }))
-                  });
+        s_spawn.run_until(future::poll_fn(|| if *running_spawn.lock().unwrap() {
+            Ok(futures::Async::NotReady)
+        } else {
+            Ok(futures::Async::Ready(()))
+        }))
+    });
     thread::sleep(Duration::from_millis(500)); // wait a bit for the server to come up
     let test_env = TestEnv::new(s.clone());
     test(test_env);
@@ -189,7 +197,9 @@ pub enum TestingError {
 
 /// Consumes the body and reads it into a String.
 pub fn read_to_string(resp: Response) -> Box<Future<Item = String, Error = TestingError>> {
-    Box::new(read_to_bytes(resp).and_then(|b| String::from_utf8(b).map_err(|_| TestingError::FromUtf8Error)))
+    Box::new(read_to_bytes(resp).and_then(|b| {
+        String::from_utf8(b).map_err(|_| TestingError::FromUtf8Error)
+    }))
 }
 
 /// Consumes a response, returning the body as a vector of bytes

@@ -40,7 +40,8 @@ lazy_static! {
 
 /// Holds details about the current running server
 pub struct BinsServer<T>
-    where T: Bins + Send
+where
+    T: Bins + Send,
 {
     pub address: String,
     pub port: usize,
@@ -50,7 +51,8 @@ pub struct BinsServer<T>
 /// A Worker handles requests on the server and holds on to some
 /// state, which enables it to do its work efficiently.
 struct Worker<T>
-    where T: Bins
+where
+    T: Bins,
 {
     id_extractor: IdExtractor,
     bin_summary_path_regexp: Regex,
@@ -62,7 +64,8 @@ header! { (ContentType, "Content-Type") => [String] }
 header! { (XRusqBinId, "X-Rusqbin-Id") => [String] }
 
 impl<T> Service for Worker<T>
-    where T: Bins + Send + 'static
+where
+    T: Bins + Send + 'static,
 {
     // boilerplate hooking up hyper's server types
     type Request = Request;
@@ -96,49 +99,50 @@ impl<T> Service for Worker<T>
                 _ => future_result(bad_request(Response::new())),
             }
         };
-        Box::new(result_future.then( |handling_result| {
-        match handling_result {
-            Err(Error::PoisonedLock) => panic!("Yo. Mutex got poisoned. Now wut?"),
-            Err(e) => {
-                error!("Something really messed up bad: {:?}", e);
-                let mut res = Response::new();
-                res.set_status(StatusCode::InternalServerError);
-                future::ok(res)
-            }
-            Ok(rsp) => future::ok(rsp),
-        }}))
+        Box::new(result_future.then(
+            |handling_result| match handling_result {
+                Err(Error::PoisonedLock) => panic!("Yo. Mutex got poisoned. Now wut?"),
+                Err(e) => {
+                    error!("Something really messed up bad: {:?}", e);
+                    let mut res = Response::new();
+                    res.set_status(StatusCode::InternalServerError);
+                    future::ok(res)
+                }
+                Ok(rsp) => future::ok(rsp),
+            },
+        ))
     }
 }
 
-fn future_result(r: Result<Response, errors::Error>)
-                 -> Box<Future<Item = Response, Error = errors::Error>> {
+fn future_result(
+    r: Result<Response, errors::Error>,
+) -> Box<Future<Item = Response, Error = errors::Error>> {
     Box::new(future::result(r))
 }
 
 impl<T> Worker<T>
-    where T: Bins + 'static
+where
+    T: Bins + 'static,
 {
     // <-- Routing-related helper functions
     fn extract_id_from_bin_summary_path<'a>(&'a self, s: &'a str) -> Option<Id> {
         let caps = self.bin_summary_path_regexp.captures(&*s);
         caps.and_then(|c| {
-                          c.get(1)
-                              .and_then(|r| self.id_extractor.parse(r.as_str()))
-                      })
+            c.get(1).and_then(|r| self.id_extractor.parse(r.as_str()))
+        })
     }
 
     fn extract_id_from_bin_requests_path<'a>(&'a self, s: &'a str) -> Option<Id> {
         let caps = self.bin_requests_path_regexp.captures(&*s);
         caps.and_then(|c| {
-                          c.get(1)
-                              .and_then(|r| self.id_extractor.parse(r.as_str()))
-                      })
+            c.get(1).and_then(|r| self.id_extractor.parse(r.as_str()))
+        })
     }
 
     fn extract_id_from_header<'a>(&'a self, headers: &'a Headers) -> Option<Id> {
-        headers
-            .get::<XRusqBinId>()
-            .and_then(|s| self.id_extractor.parse(s))
+        headers.get::<XRusqBinId>().and_then(
+            |s| self.id_extractor.parse(s),
+        )
     }
     // Routing-related helper functions -->
 
@@ -255,10 +259,10 @@ impl<T> Worker<T>
 
 fn write_json<T: Serialize>(t: &T, mut res: Response) -> Result<Response, Error> {
     let encoded: String = serde_json::ser::to_string_pretty(t)?;
-    res.headers_mut()
-        .set(ContentLength(encoded.len() as u64));
-    res.headers_mut()
-        .set(ContentType("application/json".to_owned()));
+    res.headers_mut().set(ContentLength(encoded.len() as u64));
+    res.headers_mut().set(
+        ContentType("application/json".to_owned()),
+    );
     res.set_body(encoded);
     Ok(res)
 }
@@ -278,9 +282,10 @@ fn ok(mut res: Response) -> Result<Response, Error> {
     Ok(res)
 }
 
-fn build_models_request(req_time: i64,
-                        req: Request)
-                        -> Box<Future<Item = models::Request, Error = errors::Error>> {
+fn build_models_request(
+    req_time: i64,
+    req: Request,
+) -> Box<Future<Item = models::Request, Error = errors::Error>> {
     let req_headers: Headers = req.headers().clone(); // to escape immutable req borrow..
     let content_length = req_headers.get::<ContentLength>().map(|l| l.0);
     let content_type = req_headers.get::<ContentType>().map(|t| t.0.clone());
@@ -302,10 +307,9 @@ fn build_models_request(req_time: i64,
     };
     let mut query_map: HashMap<String, Vec<String>> = HashMap::new();
     for (k, v) in parsed_url.query_pairs() {
-        query_map
-            .entry(k.into_owned())
-            .or_insert(vec![])
-            .push(v.into_owned());
+        query_map.entry(k.into_owned()).or_insert(vec![]).push(
+            v.into_owned(),
+        );
     }
 
     let future_body: Box<Future<Item = Option<String>, Error = errors::Error>> =
@@ -326,7 +330,8 @@ fn build_models_request(req_time: i64,
 }
 
 impl<T> BinsServer<T>
-    where T: Bins + Send + 'static
+where
+    T: Bins + Send + 'static,
 {
     pub fn new(port: usize, bins: T) -> BinsServer<T> {
         let address = format!("127.0.0.1:{}", port);
@@ -344,19 +349,19 @@ impl<T> BinsServer<T>
 
     /// Starts a BinServer and stops when the given shutdown signal returns.
     pub fn run_until<F>(&self, shutdown_signal: F) -> Result<(), errors::Error>
-        where F: future::Future<Item = (), Error = ()>
+    where
+        F: future::Future<Item = (), Error = ()>,
     {
         let addr = self.address.parse()?;
         let storage = self.storage.clone();
-        let server = Http::new()
-            .bind(&addr, move || {
-                Ok(Worker {
-                       id_extractor: IdExtractor::new(),
-                       bin_summary_path_regexp: BIN_SUMMARY_PATH_REGEXP.clone(),
-                       bin_requests_path_regexp: BIN_REQUESTS_PATH_REGEXP.clone(),
-                       bins: storage.clone(),
-                   })
-            })?;
+        let server = Http::new().bind(&addr, move || {
+            Ok(Worker {
+                id_extractor: IdExtractor::new(),
+                bin_summary_path_regexp: BIN_SUMMARY_PATH_REGEXP.clone(),
+                bin_requests_path_regexp: BIN_REQUESTS_PATH_REGEXP.clone(),
+                bins: storage.clone(),
+            })
+        })?;
         Ok(server.run_until(shutdown_signal)?)
     }
 }
@@ -364,13 +369,13 @@ impl<T> BinsServer<T>
 /// Consumes the body and reads it into a String.
 fn read_to_string(req: Request) -> Box<Future<Item = Option<String>, Error = Error>> {
     Box::new(read_to_bytes(req).and_then(|b| {
-                                              let s = String::from_utf8(b).map_err(|_| Error::FromUtf8Error);
-                                              match s {
-                                                  Ok(ref s) if s.len() == 0 => Ok(None),
-                                                  Ok(s) => Ok(Some(s)),
-                                                  Err(e) => Err(e)
-                                              }
-                                          }))
+        let s = String::from_utf8(b).map_err(|_| Error::FromUtf8Error);
+        match s {
+            Ok(ref s) if s.len() == 0 => Ok(None),
+            Ok(s) => Ok(Some(s)),
+            Err(e) => Err(e),
+        }
+    }))
 }
 
 /// Consumes a request, returning the body as a vector of bytes

@@ -20,12 +20,7 @@ use common::*;
 #[test]
 fn test_list_empty() {
     run_with_server(|test_env| {
-        let ref bins = test_env
-            .server
-            .storage
-            .lock()
-            .unwrap()
-            .get_bin_summaries();
+        let ref bins = test_env.server.storage.lock().unwrap().get_bin_summaries();
         assert!(bins.is_empty());
     })
 }
@@ -34,20 +29,20 @@ fn test_list_empty() {
 #[test]
 fn test_creating_bin() {
     run_with_server(|mut test_env| {
-                        let bin = test_env.create_bin().unwrap();
-                        let ref storage = test_env.server.storage.lock().unwrap();
-                        assert!(storage.get_bin_summary(&bin.id).is_some());
-                    })
+        let bin = test_env.create_bin().unwrap();
+        let ref storage = test_env.server.storage.lock().unwrap();
+        assert!(storage.get_bin_summary(&bin.id).is_some());
+    })
 }
 
 #[test]
 fn test_deleting_existing_bin() {
     run_with_server(|mut test_env| {
-                        let bin = test_env.create_bin().unwrap();
-                        let _deleted = test_env.delete_bin(&bin.id).unwrap();
-                        let ref storage = test_env.server.storage.lock().unwrap();
-                        assert!(storage.get_bin_summary(&bin.id).is_none());
-                    })
+        let bin = test_env.create_bin().unwrap();
+        let _deleted = test_env.delete_bin(&bin.id).unwrap();
+        let ref storage = test_env.server.storage.lock().unwrap();
+        assert!(storage.get_bin_summary(&bin.id).is_none());
+    })
 }
 
 #[test]
@@ -56,24 +51,26 @@ fn test_requesting_bin_summary() {
         let new_bin = test_env.create_bin().unwrap();
         let bin_id = new_bin.id;
 
-        let requests = vec![ServerRequest {
-                                method: Method::Get,
-                                headers: Headers::new(),
-                                path: "/",
-                                body: None,
-                            },
-                            ServerRequest {
-                                method: Method::Get,
-                                headers: Headers::new(),
-                                path: "/hello/world",
-                                body: None,
-                            },
-                            ServerRequest {
-                                method: Method::Post,
-                                headers: Headers::new(),
-                                path: "/boom/chicka/chicka",
-                                body: Some("{ id: 3 }"),
-                            }];
+        let requests = vec![
+            ServerRequest {
+                method: Method::Get,
+                headers: Headers::new(),
+                path: "/",
+                body: None,
+            },
+            ServerRequest {
+                method: Method::Get,
+                headers: Headers::new(),
+                path: "/hello/world",
+                body: None,
+            },
+            ServerRequest {
+                method: Method::Post,
+                headers: Headers::new(),
+                path: "/boom/chicka/chicka",
+                body: Some("{ id: 3 }"),
+            },
+        ];
         test_env.parallel_requests(&bin_id, &requests, 2);
 
         let ref storage = test_env.server.storage.lock().unwrap();
@@ -96,12 +93,14 @@ fn test_requesting_bin_requests() {
         headers.set(XFlubble("yep".to_owned()));
         headers.set(XDoodle("nope".to_owned()));
 
-        let requests = vec![ServerRequest {
-                                method: Method::Post,
-                                headers: headers,
-                                path: "/",
-                                body: Some("hey there."),
-                            }];
+        let requests = vec![
+            ServerRequest {
+                method: Method::Post,
+                headers: headers,
+                path: "/",
+                body: Some("hey there."),
+            },
+        ];
         test_env.parallel_requests(&bin_id, &requests, 1);
 
         let ref storage = test_env.server.storage.lock().unwrap();
@@ -112,12 +111,16 @@ fn test_requesting_bin_requests() {
         println!("{:?}", req.headers);
         assert_eq!(req.headers.len(), 5); // includes content-length, host, XRusqbinId, and the 2 additional ones we sent.
 
-        assert!(req.headers
-                    .get(<XFlubble as Header>::header_name())
-                    .is_some());
-        assert!(req.headers
-                    .get(<XDoodle as Header>::header_name())
-                    .is_some());
+        assert!(
+            req.headers
+                .get(<XFlubble as Header>::header_name())
+                .is_some()
+        );
+        assert!(
+            req.headers
+                .get(<XDoodle as Header>::header_name())
+                .is_some()
+        );
 
         assert_eq!(req.body, Some("hey there.".to_owned()));
         assert_eq!(req.method, Method::Post.as_ref());

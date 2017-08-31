@@ -1,4 +1,4 @@
-# Rusqbin [![Build Status](https://travis-ci.org/lloydmeta/rusqbin.svg?branch=master)](https://travis-ci.org/lloydmeta/rusqbin) [![Crates.io](https://img.shields.io/crates/v/rusqbin.svg)](https://crates.io/crates/rusqbin)
+# Rusqbin [![Build Status](https://travis-ci.org/lloydmeta/rusqbin.svg?branch=master)](https://travis-ci.org/lloydmeta/rusqbin) [![Crates.io](https://img.shields.io/crates/v/rusqbin.svg)](https://crates.io/crates/rusqbin) [![](https://images.microbadger.com/badges/image/lloydmeta/rusqbin.svg)](https://microbadger.com/images/lloydmeta/rusqbin "rusqbin docker image details")
 
 Rusqbin is a web server that stashes your requests for later retrieval. It is available as
 both a binary and a library through [crates.io](https://crates.io/crates/rusqbin).
@@ -21,6 +21,10 @@ The web server has the following API for dealing with request bins.
 
 In any other case, send requests with a X-Rusqbin-Id header with a
 bin_id to have your requests logged to a bin for later retrieval.
+
+### Docker
+
+`$ docker run lloydmeta/rusqbin:latest`
 
 ### Binary
 

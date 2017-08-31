@@ -5,10 +5,14 @@ extern crate clap;
 #[macro_use]
 extern crate log;
 extern crate env_logger;
+extern crate openssl_probe;
 
 use rusqbin::server::BinsServer;
 use rusqbin::storage::InMemoryBins;
 use clap::{Arg, App};
+
+use std::error::Error;
+use std::process::exit;
 
 const DEFAULT_PORT: usize = 9999;
 const DEFAULT_PORT_STR: &'static str = "9999";
@@ -28,21 +32,33 @@ In any other case, send requests with a X-Rusqbin-Id header with a
 bin_id to have your requests logged to a bin for later retrieval.
 "#;
 
-
 fn main() {
+    match inner_main() {
+        Ok(_) => exit(0),
+        Err(e) => {
+            println!("Something went horribly wrong: {}", e);
+            exit(1)
+        }
+    }
+}
 
-    env_logger::init().unwrap();
+fn inner_main() -> Result<(), Box<Error>> {
+
+    openssl_probe::init_ssl_cert_env_vars();
+    env_logger::init()?;
 
     let matches = App::new("rusqbin")
         .version(&version()[..])
         .author("Lloyd (github.com/lloydmeta)")
         .about("requestb.in in Rust")
-        .arg(Arg::with_name("port")
-                 .short("p")
-                 .default_value(DEFAULT_PORT_STR)
-                 .help("Sets the port for your sever")
-                 .required(false)
-                 .index(1))
+        .arg(
+            Arg::with_name("port")
+                .short("p")
+                .default_value(DEFAULT_PORT_STR)
+                .help("Sets the port for your sever")
+                .required(false)
+                .index(1),
+        )
         .get_matches();
 
     match matches.value_of("port") {
@@ -58,16 +74,18 @@ fn main() {
 }
 
 /// Starts a BinsServer on the given port with an InMemory database.
-fn start_on_port(p: usize) {
+fn start_on_port(p: usize) -> Result<(), Box<Error>> {
     let s = BinsServer::new(p, InMemoryBins::new());
     println!("{}\n\n Server starting on {}", GREET, s.address);
-    s.run().unwrap()
+    Ok(s.run()?)
 }
 
 fn version() -> String {
-    let (maj, min, pat) = (option_env!("CARGO_PKG_VERSION_MAJOR"),
-                           option_env!("CARGO_PKG_VERSION_MINOR"),
-                           option_env!("CARGO_PKG_VERSION_PATCH"));
+    let (maj, min, pat) = (
+        option_env!("CARGO_PKG_VERSION_MAJOR"),
+        option_env!("CARGO_PKG_VERSION_MINOR"),
+        option_env!("CARGO_PKG_VERSION_PATCH"),
+    );
     match (maj, min, pat) {
         (Some(maj), Some(min), Some(pat)) => format!("{}.{}.{}", maj, min, pat),
         _ => "".to_owned(),

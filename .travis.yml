@@ -1,19 +1,46 @@
 language: rust
-sudo: false
+dist: trusty
+sudo: required
+
+addons:
+  apt:
+    packages:
+      - docker-ce
+
+before_script:
+  - >
+    echo '{ "experimental": true }' | sudo tee /etc/docker/daemon.json > /dev/null
+  - sudo service docker restart
+  - pip install 'travis-cargo<0.2' --user && export PATH=$HOME/.local/bin:$PATH
 rust:
   - stable
   - nightly
+
 cache: cargo
-before_script:
-  - pip install 'travis-cargo<0.2' --user && export PATH=$HOME/.local/bin:$PATH
+
+before_cache:
+  # Travis can't cache files that are not readable by "others"
+  - chmod -R a+r $HOME/.cargo
+
+
 script:
-  - travis-cargo build
-  - travis-cargo test
-  - travis-cargo clean
-  - travis-cargo --only nightly doc -- --no-deps
+  - >
+    if [ "${TRAVIS_PULL_REQUEST}" = "false" ] &&  [ ! -z "${TRAVIS_TAG}" ]; then
+      make lint build tag push
+    else
+      make lint build &&\
+        travis-cargo build &&\
+        travis-cargo test &&\
+        travis-cargo clean &&\
+        travis-cargo --only nightly doc -- --no-deps
+    fi
+
 after_success:
   - travis-cargo --only nightly doc-upload
+
 env:
   global:
   - TRAVIS_CARGO_NIGHTLY_FEATURE=""
   - secure: jJ1pr0ykouh4b5OCauu3q+nxgoWknz15ZA2TuaaN1/avv22T+bsXVGKy8G5DlVO/9IDTBRSS88JESzDTWxaCIL1EhcFcNYT8ys3RodnPAiea5e/wcePsRNYtzWve+GlVQcNw6ompY1FTTcHauFyjriLDmvoToWSXfkTyzP09IQRIDtx+zhxj7Je8fzyaOYaphToQMKOXriEN9n1WyLrMbXESG2DfTgYEXYN1Wx66QKADzcrJTYLFwz7rN5RLTEQ5PTZ9NN0dSVqTTO5/XiKBYRCS4njbrQpgSrgUwogh0sH0K4lYptT8GjlP5DqzpVDiqg/B0WS4RC/vzXy8ZKEKHqagK0MunYiSIQ8kwpEKI/2NCP6CWdxmu/gXjoWyxEC5wwqYfVelTIOqS73ozeWDaZ2qvOXpaqI2VzPUUQyBQoU5fLkgUGBU5sgbJZC7C2nZjuxPyNM/rGipPrRYUVwGf86BsoDDOFeY28ewr1Cwl0UWQ6gaJfWk38WZ3NFf91pndS5OT9GpQMHMffTqaoNSN2oEweGOf4w01q7XGX0hpCTxhCG/Au2IHhIA/trSfIo6PSVPO2ZJ2ShKFyzSmGEkQBRFRp3u63WeB1haApxK9GMGlDEXT2KIDDiHjLV05RsdiJnaqeJzEaei4rD77vWi1AbY+o+J7OgeraDHt+whzFU=
+  - secure: cha1SySXvsgPGFvDOW/a3TPbns5VJBKY+Tk4ZqHhADAVnBZMANm0XpWwvTbFspN4mUj/ZGW8lCNWsaBGont2u/a/88fi+EpwSgho6Bftv0N+xx1qSc98bwha945Uv1Z99IUyTd56BXxCB6nBTYJAxse8l22MBz3/AhXzTQsA3Jlh5sDizg/Zob5r/lHqD7in6EKDUpMlEkghMeNduSQEF3PjdHzEnKrYL+eQkUUB5mHvBCBVZsbkQy63WKvuTgM2XpHm/r4wVZmWyOuxky4S6ZAvlv9wPTH3cnTrYCqlPgwnRmbDjbbwzHXT5AMPpeIbTgt7eLqT78whQiklbRbEvTY51o6e8yg4JAGANwnOtkFVIl0632tZFBUnPMmvxfrX/tZYLgyiOk+CL7vSNQuuMMsc/31us+2SHUbczeZnlLzb61vNq55+5dRQlS8IGKRNt52SOyqaeEUOjbM5jyqr3+VDn2CniKei0yenAYiXNFaGJLwoNK2Pjj8Ywh0KTusj+xHN1JLPA9k6Bhoysxpg08W3cMx7p5Fztg/UwVdfrolokWTcWznVQKqYijktROgM6Y96fx5F8vTUM/rkzZgjEc34a9AaUraW44woW7EcLXlpCQ4SXgrEcfdXpQAI92M/HjYIiR4TZGdEGPOFy8oQnp17voseFuh5uFc0MrUzSoM=
+  - secure: cSXr+3ZAM9Wn/KA8W6+HYWz3O7WDduRHWcKchBq/J9nSnBOlpUm5rx6OTcjXCIFTYQ3jbxjOpNxGgwc8ikaVMQMKbx7hOWMgA8V9aiUsnKQwu+B/8P7ZXAahDYoXeN7jX3JPBS8ZznHAuCT58ONUs8b1nmTN+jjjMafbpFUmK6OTdlbFGJmK7p3/a3YncoQW+hQY3+74pHShxooXEPNBXjMRnwjEuG7X7iJ7nb2quhS4fqw7Nj3G3d2PAGdReYo9/3sDHGnq3nv9er+IZaJqC5KwV1mdcZZSqV0L2yvWLDWHuI6MKt3DpJa2C9EAI3rUYDwjv0/n+Tz2iL9WVEc50+VNO0SUxpwLQMhp7OfjJp9OpxDE963SpHd3wl6ihAp5vit5mnlwGFspZIikVt7m6XJSzjYkx0C7Tecs8yJ4DdgSdBdqvSYux3DNoicKoWMNnlkccI6wDGMuoTytIr0QSfC1FfkfyNHiIB8ZQz62ZQ+0OQc2WSqzrK06C+ZzXNz51UYTtoJqmB1+CvWAj1/7FhRgXEqlPUFzjZVQHPuPXA4pSgEOG6JofISJeTdjMdXWHRC1MVEnkfNdnfgEDz9zZ3vb7V/sN8tUd3679eIZRlUqDdUA7Nd21z0z5S09kYs99KC4qyDwhXL7X0cmLGzROqfSWA8mNzCiOf2B8TVUcpY=
