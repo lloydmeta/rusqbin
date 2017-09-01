@@ -26,13 +26,9 @@ before_cache:
 script:
   - >
     if [ "${TRAVIS_PULL_REQUEST}" = "false" ] &&  [ ! -z "${TRAVIS_TAG}" ]; then
-      make lint build tag push
+      make lint build tag push docker-push-webhooks
     else
-      make lint build &&\
-        travis-cargo build &&\
-        travis-cargo test &&\
-        travis-cargo clean &&\
-        travis-cargo --only nightly doc -- --no-deps
+      make travis-tests lint build
     fi
 
 after_success:

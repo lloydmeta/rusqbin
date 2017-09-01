@@ -20,14 +20,16 @@ LABEL org.label-schema.vcs-ref=$VCS_REF \
 
 COPY $CA_CERT /etc/ssl/certs/
 COPY --from=builder /home/rust/src/target/x86_64-unknown-linux-musl/release/rusqbin /rusqbin
+COPY entry.sh /entry.sh
 
 RUN addgroup -S rusqbinuser &&\
     adduser -S -g rusqbinuser rusqbinuser &&\
     chown -R rusqbinuser /etc/ssl/certs/ &&\
-    chown rusqbinuser /rusqbin
+    chown rusqbinuser /rusqbin &&\
+    chown rusqbinuser /entry.sh
 
 USER rusqbinuser
 
 EXPOSE 9999
 
-ENTRYPOINT ["/rusqbin"]
+ENTRYPOINT ["/entry.sh"]

@@ -35,3 +35,12 @@ push: login
 	docker push $(GIT_TAG)
 	docker push $(BUILD_TAG)
 	docker push $(LATEST_TAG)
+
+travis-tests:
+	travis-cargo build
+	travis-cargo test
+	travis-cargo clean
+	travis-cargo --only nightly doc -- --no-deps
+
+docker-push-webhooks:
+	curl -X POST https://hooks.microbadger.com/images/lloydmeta/taps3/2eJRdcI8Q5-jicHcJUzJOv87AXE=
