@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="generator" content="rustdoc">
+    <meta name="description" content="API documentation for the Rust `Error` enum in crate `rusqbin`.">
+    <meta name="keywords" content="rust, rustlang, rust-lang, Error">
+
+    <title>rusqbin::errors::Error - Rust</title>
+
+    <link rel="stylesheet" type="text/css" href="../../normalize.css">
+    <link rel="stylesheet" type="text/css" href="../../rustdoc.css">
+    <link rel="stylesheet" type="text/css" href="../../main.css">
+    
+
+    
+    
+</head>
+<body class="rustdoc enum">
+    <!--[if lte IE 8]>
+    <div class="warning">
+        This old browser is unsupported and will most likely display funky
+        things.
+    </div>
+    <![endif]-->
+
+    
+
+    <nav class="sidebar">
+        
+        <p class='location'>Enum Error</p><div class="block items"><ul><li><a href="#variants">Variants</a></li><li><a href="#implementations">Trait Implementations</a></li></ul></div><p class='location'><a href='../index.html'>rusqbin</a>::<wbr><a href='index.html'>errors</a></p><script>window.sidebarCurrent = {name: 'Error', ty: 'enum', relpath: ''};</script><script defer src="sidebar-items.js"></script>
+    </nav>
+
+    <nav class="sub">
+        <form class="search-form js-only">
+            <div class="search-container">
+                <input class="search-input" name="search"
+                       autocomplete="off"
+                       placeholder="Click or press ‘S’ to search, ‘?’ for more options…"
+                       type="search">
+            </div>
+        </form>
+    </nav>
+
+    <section id='main' class="content">
+<h1 class='fqn'><span class='in-band'>Enum <a href='../index.html'>rusqbin</a>::<wbr><a href='index.html'>errors</a>::<wbr><a class="enum" href=''>Error</a></span><span class='out-of-band'><span id='render-detail'>
+                   <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
+                       [<span class='inner'>&#x2212;</span>]
+                   </a>
+               </span><a class='srclink' href='../../src/rusqbin/errors.rs.html#17-28' title='goto source code'>[src]</a></span></h1>
+<pre class='rust enum'>pub enum Error {
+    PoisonedLock,
+    JsonEncodingError(<a class="struct" href="https://docs.rs/serde_json/1.0.2/serde_json/error/struct.Error.html" title="struct serde_json::error::Error">Error</a>),
+    IOError(<a class="struct" href="https://doc.rust-lang.org/nightly/std/io/error/struct.Error.html" title="struct std::io::error::Error">Error</a>),
+    RegexError(Error),
+    UrlParseError(<a class="enum" href="https://docs.rs/url/1.5.1/url/parser/enum.ParseError.html" title="enum url::parser::ParseError">ParseError</a>),
+    UnforeseenError,
+    ServerError(<a class="enum" href="https://docs.rs/hyper/0.11.2/hyper/error/enum.Error.html" title="enum hyper::error::Error">Error</a>),
+    AddressParsingErr(<a class="struct" href="https://doc.rust-lang.org/nightly/std/net/parser/struct.AddrParseError.html" title="struct std::net::parser::AddrParseError">AddrParseError</a>),
+    FromUtf8Error,
+    HyperError,
+}</pre><div class='docblock'><p>Project-specfic error enum.</p>
+</div><h2 id='variants' class='variants small-section-header'>
+                   Variants<a href='#variants' class='anchor'></a></h2>
+<span id='variant.PoisonedLock' class='variant'><span id='PoisonedLock.v' class='invisible'><code>PoisonedLock</code></span></span><span id='variant.JsonEncodingError' class='variant'><span id='JsonEncodingError.v' class='invisible'><code>JsonEncodingError(<a class="struct" href="https://docs.rs/serde_json/1.0.2/serde_json/error/struct.Error.html" title="struct serde_json::error::Error">Error</a>)</code></span></span><span id='variant.IOError' class='variant'><span id='IOError.v' class='invisible'><code>IOError(<a class="struct" href="https://doc.rust-lang.org/nightly/std/io/error/struct.Error.html" title="struct std::io::error::Error">Error</a>)</code></span></span><span id='variant.RegexError' class='variant'><span id='RegexError.v' class='invisible'><code>RegexError(Error)</code></span></span><span id='variant.UrlParseError' class='variant'><span id='UrlParseError.v' class='invisible'><code>UrlParseError(<a class="enum" href="https://docs.rs/url/1.5.1/url/parser/enum.ParseError.html" title="enum url::parser::ParseError">ParseError</a>)</code></span></span><span id='variant.UnforeseenError' class='variant'><span id='UnforeseenError.v' class='invisible'><code>UnforeseenError</code></span></span><span id='variant.ServerError' class='variant'><span id='ServerError.v' class='invisible'><code>ServerError(<a class="enum" href="https://docs.rs/hyper/0.11.2/hyper/error/enum.Error.html" title="enum hyper::error::Error">Error</a>)</code></span></span><span id='variant.AddressParsingErr' class='variant'><span id='AddressParsingErr.v' class='invisible'><code>AddressParsingErr(<a class="struct" href="https://doc.rust-lang.org/nightly/std/net/parser/struct.AddrParseError.html" title="struct std::net::parser::AddrParseError">AddrParseError</a>)</code></span></span><span id='variant.FromUtf8Error' class='variant'><span id='FromUtf8Error.v' class='invisible'><code>FromUtf8Error</code></span></span><span id='variant.HyperError' class='variant'><span id='HyperError.v' class='invisible'><code>HyperError</code></span></span>
+            <h2 id='implementations' class='small-section-header'>
+              Trait Implementations<a href='#implementations' class='anchor'></a>
+            </h2>
+        <h3 id='impl-Debug' class='impl'><span class='in-band'><code>impl <a class="trait" href="https://doc.rust-lang.org/nightly/core/fmt/trait.Debug.html" title="trait core::fmt::Debug">Debug</a> for <a class="enum" href="../../rusqbin/errors/enum.Error.html" title="enum rusqbin::errors::Error">Error</a></code><a href='#impl-Debug' class='anchor'></a></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../src/rusqbin/errors.rs.html#16' title='goto source code'>[src]</a></span></h3>
+<div class='impl-items'><h4 id='method.fmt' class="method"><span id='fmt.v' class='invisible'><code>fn <a href='https://doc.rust-lang.org/nightly/core/fmt/trait.Debug.html#tymethod.fmt' class='fnname'>fmt</a>(&amp;self, __arg_0: &amp;mut <a class="struct" href="https://doc.rust-lang.org/nightly/core/fmt/struct.Formatter.html" title="struct core::fmt::Formatter">Formatter</a>) -&gt; <a class="type" href="https://doc.rust-lang.org/nightly/core/fmt/type.Result.html" title="type core::fmt::Result">Result</a></code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../src/rusqbin/errors.rs.html#16' title='goto source code'>[src]</a></span></h4>
+<div class='docblock'><p>Formats the value using the given formatter.</p>
+</div></div><h3 id='impl-From&lt;PoisonError&lt;T&gt;&gt;' class='impl'><span class='in-band'><code>impl&lt;T&gt; <a class="trait" href="https://doc.rust-lang.org/nightly/core/convert/trait.From.html" title="trait core::convert::From">From</a>&lt;<a class="struct" href="https://doc.rust-lang.org/nightly/std/sys_common/poison/struct.PoisonError.html" title="struct std::sys_common::poison::PoisonError">PoisonError</a>&lt;T&gt;&gt; for <a class="enum" href="../../rusqbin/errors/enum.Error.html" title="enum rusqbin::errors::Error">Error</a></code><a href='#impl-From&lt;PoisonError&lt;T&gt;&gt;' class='anchor'></a></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../src/rusqbin/errors.rs.html#30-34' title='goto source code'>[src]</a></span></h3>
+<div class='impl-items'><h4 id='method.from' class="method"><span id='from.v' class='invisible'><code>fn <a href='https://doc.rust-lang.org/nightly/core/convert/trait.From.html#tymethod.from' class='fnname'>from</a>(_: <a class="struct" href="https://doc.rust-lang.org/nightly/std/sys_common/poison/struct.PoisonError.html" title="struct std::sys_common::poison::PoisonError">PoisonError</a>&lt;T&gt;) -&gt; Self</code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../src/rusqbin/errors.rs.html#31-33' title='goto source code'>[src]</a></span></h4>
+<div class='docblock'><p>Performs the conversion.</p>
+</div></div><h3 id='impl-From&lt;Error&gt;' class='impl'><span class='in-band'><code>impl <a class="trait" href="https://doc.rust-lang.org/nightly/core/convert/trait.From.html" title="trait core::convert::From">From</a>&lt;<a class="struct" href="https://docs.rs/serde_json/1.0.2/serde_json/error/struct.Error.html" title="struct serde_json::error::Error">Error</a>&gt; for <a class="enum" href="../../rusqbin/errors/enum.Error.html" title="enum rusqbin::errors::Error">Error</a></code><a href='#impl-From&lt;Error&gt;' class='anchor'></a></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../src/rusqbin/errors.rs.html#36-40' title='goto source code'>[src]</a></span></h3>
+<div class='impl-items'><h4 id='method.from-1' class="method"><span id='from.v-1' class='invisible'><code>fn <a href='https://doc.rust-lang.org/nightly/core/convert/trait.From.html#tymethod.from' class='fnname'>from</a>(e: <a class="struct" href="https://docs.rs/serde_json/1.0.2/serde_json/error/struct.Error.html" title="struct serde_json::error::Error">Error</a>) -&gt; Self</code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../src/rusqbin/errors.rs.html#37-39' title='goto source code'>[src]</a></span></h4>
+<div class='docblock'><p>Performs the conversion.</p>
+</div></div><h3 id='impl-From&lt;Error&gt;-1' class='impl'><span class='in-band'><code>impl <a class="trait" href="https://doc.rust-lang.org/nightly/core/convert/trait.From.html" title="trait core::convert::From">From</a>&lt;<a class="struct" href="https://doc.rust-lang.org/nightly/std/io/error/struct.Error.html" title="struct std::io::error::Error">Error</a>&gt; for <a class="enum" href="../../rusqbin/errors/enum.Error.html" title="enum rusqbin::errors::Error">Error</a></code><a href='#impl-From&lt;Error&gt;-1' class='anchor'></a></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../src/rusqbin/errors.rs.html#42-46' title='goto source code'>[src]</a></span></h3>
+<div class='impl-items'><h4 id='method.from-2' class="method"><span id='from.v-2' class='invisible'><code>fn <a href='https://doc.rust-lang.org/nightly/core/convert/trait.From.html#tymethod.from' class='fnname'>from</a>(e: <a class="struct" href="https://doc.rust-lang.org/nightly/std/io/error/struct.Error.html" title="struct std::io::error::Error">Error</a>) -&gt; Self</code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../src/rusqbin/errors.rs.html#43-45' title='goto source code'>[src]</a></span></h4>
+<div class='docblock'><p>Performs the conversion.</p>
+</div></div><h3 id='impl-From&lt;Error&gt;-2' class='impl'><span class='in-band'><code>impl <a class="trait" href="https://doc.rust-lang.org/nightly/core/convert/trait.From.html" title="trait core::convert::From">From</a>&lt;Error&gt; for <a class="enum" href="../../rusqbin/errors/enum.Error.html" title="enum rusqbin::errors::Error">Error</a></code><a href='#impl-From&lt;Error&gt;-2' class='anchor'></a></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../src/rusqbin/errors.rs.html#48-52' title='goto source code'>[src]</a></span></h3>
+<div class='impl-items'><h4 id='method.from-3' class="method"><span id='from.v-3' class='invisible'><code>fn <a href='https://doc.rust-lang.org/nightly/core/convert/trait.From.html#tymethod.from' class='fnname'>from</a>(e: Error) -&gt; Self</code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../src/rusqbin/errors.rs.html#49-51' title='goto source code'>[src]</a></span></h4>
+<div class='docblock'><p>Performs the conversion.</p>
+</div></div><h3 id='impl-From&lt;ParseError&gt;' class='impl'><span class='in-band'><code>impl <a class="trait" href="https://doc.rust-lang.org/nightly/core/convert/trait.From.html" title="trait core::convert::From">From</a>&lt;<a class="enum" href="https://docs.rs/url/1.5.1/url/parser/enum.ParseError.html" title="enum url::parser::ParseError">ParseError</a>&gt; for <a class="enum" href="../../rusqbin/errors/enum.Error.html" title="enum rusqbin::errors::Error">Error</a></code><a href='#impl-From&lt;ParseError&gt;' class='anchor'></a></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../src/rusqbin/errors.rs.html#54-58' title='goto source code'>[src]</a></span></h3>
+<div class='impl-items'><h4 id='method.from-4' class="method"><span id='from.v-4' class='invisible'><code>fn <a href='https://doc.rust-lang.org/nightly/core/convert/trait.From.html#tymethod.from' class='fnname'>from</a>(e: <a class="enum" href="https://docs.rs/url/1.5.1/url/parser/enum.ParseError.html" title="enum url::parser::ParseError">ParseError</a>) -&gt; Self</code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../src/rusqbin/errors.rs.html#55-57' title='goto source code'>[src]</a></span></h4>
+<div class='docblock'><p>Performs the conversion.</p>
+</div></div><h3 id='impl-From&lt;Error&gt;-3' class='impl'><span class='in-band'><code>impl <a class="trait" href="https://doc.rust-lang.org/nightly/core/convert/trait.From.html" title="trait core::convert::From">From</a>&lt;<a class="enum" href="https://docs.rs/hyper/0.11.2/hyper/error/enum.Error.html" title="enum hyper::error::Error">Error</a>&gt; for <a class="enum" href="../../rusqbin/errors/enum.Error.html" title="enum rusqbin::errors::Error">Error</a></code><a href='#impl-From&lt;Error&gt;-3' class='anchor'></a></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../src/rusqbin/errors.rs.html#60-64' title='goto source code'>[src]</a></span></h3>
+<div class='impl-items'><h4 id='method.from-5' class="method"><span id='from.v-5' class='invisible'><code>fn <a href='https://doc.rust-lang.org/nightly/core/convert/trait.From.html#tymethod.from' class='fnname'>from</a>(e: <a class="enum" href="https://docs.rs/hyper/0.11.2/hyper/error/enum.Error.html" title="enum hyper::error::Error">Error</a>) -&gt; Self</code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../src/rusqbin/errors.rs.html#61-63' title='goto source code'>[src]</a></span></h4>
+<div class='docblock'><p>Performs the conversion.</p>
+</div></div><h3 id='impl-From&lt;AddrParseError&gt;' class='impl'><span class='in-band'><code>impl <a class="trait" href="https://doc.rust-lang.org/nightly/core/convert/trait.From.html" title="trait core::convert::From">From</a>&lt;<a class="struct" href="https://doc.rust-lang.org/nightly/std/net/parser/struct.AddrParseError.html" title="struct std::net::parser::AddrParseError">AddrParseError</a>&gt; for <a class="enum" href="../../rusqbin/errors/enum.Error.html" title="enum rusqbin::errors::Error">Error</a></code><a href='#impl-From&lt;AddrParseError&gt;' class='anchor'></a></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../src/rusqbin/errors.rs.html#66-70' title='goto source code'>[src]</a></span></h3>
+<div class='impl-items'><h4 id='method.from-6' class="method"><span id='from.v-6' class='invisible'><code>fn <a href='https://doc.rust-lang.org/nightly/core/convert/trait.From.html#tymethod.from' class='fnname'>from</a>(e: <a class="struct" href="https://doc.rust-lang.org/nightly/std/net/parser/struct.AddrParseError.html" title="struct std::net::parser::AddrParseError">AddrParseError</a>) -&gt; Self</code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../src/rusqbin/errors.rs.html#67-69' title='goto source code'>[src]</a></span></h4>
+<div class='docblock'><p>Performs the conversion.</p>
+</div></div><h3 id='impl-Display' class='impl'><span class='in-band'><code>impl <a class="trait" href="https://doc.rust-lang.org/nightly/core/fmt/trait.Display.html" title="trait core::fmt::Display">Display</a> for <a class="enum" href="../../rusqbin/errors/enum.Error.html" title="enum rusqbin::errors::Error">Error</a></code><a href='#impl-Display' class='anchor'></a></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../src/rusqbin/errors.rs.html#73-90' title='goto source code'>[src]</a></span></h3>
+<div class='impl-items'><h4 id='method.fmt-1' class="method"><span id='fmt.v-1' class='invisible'><code>fn <a href='https://doc.rust-lang.org/nightly/core/fmt/trait.Display.html#tymethod.fmt' class='fnname'>fmt</a>(&amp;self, f: &amp;mut <a class="struct" href="https://doc.rust-lang.org/nightly/core/fmt/struct.Formatter.html" title="struct core::fmt::Formatter">Formatter</a>) -&gt; <a class="type" href="https://doc.rust-lang.org/nightly/core/fmt/type.Result.html" title="type core::fmt::Result">Result</a></code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../src/rusqbin/errors.rs.html#74-89' title='goto source code'>[src]</a></span></h4>
+<div class='docblock'><p>Formats the value using the given formatter. <a href="https://doc.rust-lang.org/nightly/core/fmt/trait.Display.html#tymethod.fmt">Read more</a></p>
+</div></div><h3 id='impl-StdErr' class='impl'><span class='in-band'><code>impl <a class="trait" href="https://doc.rust-lang.org/nightly/std/error/trait.Error.html" title="trait std::error::Error">StdErr</a> for <a class="enum" href="../../rusqbin/errors/enum.Error.html" title="enum rusqbin::errors::Error">Error</a></code><a href='#impl-StdErr' class='anchor'></a></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../src/rusqbin/errors.rs.html#92-121' title='goto source code'>[src]</a></span></h3>
+<div class='impl-items'><h4 id='method.description' class="method"><span id='description.v' class='invisible'><code>fn <a href='https://doc.rust-lang.org/nightly/std/error/trait.Error.html#tymethod.description' class='fnname'>description</a>(&amp;self) -&gt; &amp;<a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.str.html">str</a></code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../src/rusqbin/errors.rs.html#93-107' title='goto source code'>[src]</a></span></h4>
+<div class='docblock'><p>A short description of the error. <a href="https://doc.rust-lang.org/nightly/std/error/trait.Error.html#tymethod.description">Read more</a></p>
+</div><h4 id='method.cause' class="method"><span id='cause.v' class='invisible'><code>fn <a href='https://doc.rust-lang.org/nightly/std/error/trait.Error.html#method.cause' class='fnname'>cause</a>(&amp;self) -&gt; <a class="enum" href="https://doc.rust-lang.org/nightly/core/option/enum.Option.html" title="enum core::option::Option">Option</a>&lt;&amp;<a class="trait" href="https://doc.rust-lang.org/nightly/std/error/trait.Error.html" title="trait std::error::Error">StdErr</a>&gt;</code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../src/rusqbin/errors.rs.html#109-120' title='goto source code'>[src]</a></span></h4>
+<div class='docblock'><p>The lower-level cause of this error, if any. <a href="https://doc.rust-lang.org/nightly/std/error/trait.Error.html#method.cause">Read more</a></p>
+</div></div></section>
+    <section id='search' class="content hidden"></section>
+
+    <section class="footer"></section>
+
+    <aside id="help" class="hidden">
+        <div>
+            <h1 class="hidden">Help</h1>
+
+            <div class="shortcuts">
+                <h2>Keyboard Shortcuts</h2>
+
+                <dl>
+                    <dt>?</dt>
+                    <dd>Show this help dialog</dd>
+                    <dt>S</dt>
+                    <dd>Focus the search field</dd>
+                    <dt>&larrb;</dt>
+                    <dd>Move up in search results</dd>
+                    <dt>&rarrb;</dt>
+                    <dd>Move down in search results</dd>
+                    <dt>&#9166;</dt>
+                    <dd>Go to active search result</dd>
+                    <dt>+</dt>
+                    <dd>Collapse/expand all sections</dd>
+                </dl>
+            </div>
+
+            <div class="infos">
+                <h2>Search Tricks</h2>
+
+                <p>
+                    Prefix searches with a type followed by a colon (e.g.
+                    <code>fn:</code>) to restrict the search to a given type.
+                </p>
+
+                <p>
+                    Accepted types are: <code>fn</code>, <code>mod</code>,
+                    <code>struct</code>, <code>enum</code>,
+                    <code>trait</code>, <code>type</code>, <code>macro</code>,
+                    and <code>const</code>.
+                </p>
+
+                <p>
+                    Search functions by type signature (e.g.
+                    <code>vec -> usize</code> or <code>* -> vec</code>)
+                </p>
+            </div>
+        </div>
+    </aside>
+
+    
+
+    <script>
+        window.rootPath = "../../";
+        window.currentCrate = "rusqbin";
+    </script>
+    <script src="../../main.js"></script>
+    <script defer src="../../search-index.js"></script>
+</body>
+</html>

@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="generator" content="rustdoc">
+    <meta name="description" content="API documentation for the Rust `Bins` trait in crate `rusqbin`.">
+    <meta name="keywords" content="rust, rustlang, rust-lang, Bins">
+
+    <title>rusqbin::storage::Bins - Rust</title>
+
+    <link rel="stylesheet" type="text/css" href="../../normalize.css">
+    <link rel="stylesheet" type="text/css" href="../../rustdoc.css">
+    <link rel="stylesheet" type="text/css" href="../../main.css">
+    
+
+    
+    
+</head>
+<body class="rustdoc trait">
+    <!--[if lte IE 8]>
+    <div class="warning">
+        This old browser is unsupported and will most likely display funky
+        things.
+    </div>
+    <![endif]-->
+
+    
+
+    <nav class="sidebar">
+        
+        <p class='location'>Trait Bins</p><div class="block items"><ul><li><a href="#required-methods">Required Methods</a></li><li><a href="#implementors">Implementors</a></li></ul></div><p class='location'><a href='../index.html'>rusqbin</a>::<wbr><a href='index.html'>storage</a></p><script>window.sidebarCurrent = {name: 'Bins', ty: 'trait', relpath: ''};</script><script defer src="sidebar-items.js"></script>
+    </nav>
+
+    <nav class="sub">
+        <form class="search-form js-only">
+            <div class="search-container">
+                <input class="search-input" name="search"
+                       autocomplete="off"
+                       placeholder="Click or press ‘S’ to search, ‘?’ for more options…"
+                       type="search">
+            </div>
+        </form>
+    </nav>
+
+    <section id='main' class="content">
+<h1 class='fqn'><span class='in-band'>Trait <a href='../index.html'>rusqbin</a>::<wbr><a href='index.html'>storage</a>::<wbr><a class="trait" href=''>Bins</a></span><span class='out-of-band'><span id='render-detail'>
+                   <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
+                       [<span class='inner'>&#x2212;</span>]
+                   </a>
+               </span><a class='srclink' href='../../src/rusqbin/storage.rs.html#27-46' title='goto source code'>[src]</a></span></h1>
+<pre class='rust trait'>pub trait Bins {
+    fn <a href='#tymethod.create_bin' class='fnname'>create_bin</a>(&amp;mut self) -&gt; <a class="struct" href="../../rusqbin/models/struct.BinSummary.html" title="struct rusqbin::models::BinSummary">BinSummary</a>;
+<div class='item-spacer'></div>    fn <a href='#tymethod.delete_bin' class='fnname'>delete_bin</a>(&amp;mut self, id: &amp;<a class="struct" href="../../rusqbin/models/struct.Id.html" title="struct rusqbin::models::Id">Id</a>) -&gt; <a class="enum" href="../../rusqbin/storage/enum.DeleteBinStatus.html" title="enum rusqbin::storage::DeleteBinStatus">DeleteBinStatus</a>;
+<div class='item-spacer'></div>    fn <a href='#tymethod.get_bin' class='fnname'>get_bin</a>&lt;'a&gt;(&amp;'a self, id: &amp;'a <a class="struct" href="../../rusqbin/models/struct.Id.html" title="struct rusqbin::models::Id">Id</a>) -&gt; <a class="enum" href="https://doc.rust-lang.org/nightly/core/option/enum.Option.html" title="enum core::option::Option">Option</a>&lt;&amp;<a class="type" href="../../rusqbin/storage/type.Bin.html" title="type rusqbin::storage::Bin">Bin</a>&gt;;
+<div class='item-spacer'></div>    fn <a href='#tymethod.get_bin_summary' class='fnname'>get_bin_summary</a>(&amp;self, id: &amp;<a class="struct" href="../../rusqbin/models/struct.Id.html" title="struct rusqbin::models::Id">Id</a>) -&gt; <a class="enum" href="https://doc.rust-lang.org/nightly/core/option/enum.Option.html" title="enum core::option::Option">Option</a>&lt;<a class="struct" href="../../rusqbin/models/struct.BinSummary.html" title="struct rusqbin::models::BinSummary">BinSummary</a>&gt;;
+<div class='item-spacer'></div>    fn <a href='#tymethod.get_bin_summaries' class='fnname'>get_bin_summaries</a>(&amp;self) -&gt; <a class="struct" href="https://doc.rust-lang.org/nightly/std/collections/hash/map/struct.HashMap.html" title="struct std::collections::hash::map::HashMap">HashMap</a>&lt;<a class="struct" href="../../rusqbin/models/struct.Id.html" title="struct rusqbin::models::Id">Id</a>, <a class="struct" href="../../rusqbin/models/struct.BinSummary.html" title="struct rusqbin::models::BinSummary">BinSummary</a>&gt;;
+<div class='item-spacer'></div>    fn <a href='#tymethod.insert_request' class='fnname'>insert_request</a>(<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&amp;mut self, <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;id: &amp;<a class="struct" href="../../rusqbin/models/struct.Id.html" title="struct rusqbin::models::Id">Id</a>, <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;request: <a class="struct" href="../../rusqbin/models/struct.Request.html" title="struct rusqbin::models::Request">Request</a><br>&nbsp;&nbsp;&nbsp;&nbsp;) -&gt; <a class="enum" href="../../rusqbin/storage/enum.InsertRequestStatus.html" title="enum rusqbin::storage::InsertRequestStatus">InsertRequestStatus</a>;
+}</pre><div class='docblock'><p>Trait for storage operations for Requests.</p>
+</div>
+            <h2 id='required-methods' class='small-section-header'>
+              Required Methods<a href='#required-methods' class='anchor'></a>
+            </h2>
+            <div class='methods'>
+        <h3 id='tymethod.create_bin' class='method'><span id='create_bin.v' class='invisible'><code>fn <a href='#tymethod.create_bin' class='fnname'>create_bin</a>(&amp;mut self) -&gt; <a class="struct" href="../../rusqbin/models/struct.BinSummary.html" title="struct rusqbin::models::BinSummary">BinSummary</a></code></span></h3><div class='docblock'><p>Returns a BinSummary of a newly-reated bin. The Id in the summary
+must be unique at the time of creation.</p>
+</div><h3 id='tymethod.delete_bin' class='method'><span id='delete_bin.v' class='invisible'><code>fn <a href='#tymethod.delete_bin' class='fnname'>delete_bin</a>(&amp;mut self, id: &amp;<a class="struct" href="../../rusqbin/models/struct.Id.html" title="struct rusqbin::models::Id">Id</a>) -&gt; <a class="enum" href="../../rusqbin/storage/enum.DeleteBinStatus.html" title="enum rusqbin::storage::DeleteBinStatus">DeleteBinStatus</a></code></span></h3><div class='docblock'><p>Delete a bin by Id</p>
+</div><h3 id='tymethod.get_bin' class='method'><span id='get_bin.v' class='invisible'><code>fn <a href='#tymethod.get_bin' class='fnname'>get_bin</a>&lt;'a&gt;(&amp;'a self, id: &amp;'a <a class="struct" href="../../rusqbin/models/struct.Id.html" title="struct rusqbin::models::Id">Id</a>) -&gt; <a class="enum" href="https://doc.rust-lang.org/nightly/core/option/enum.Option.html" title="enum core::option::Option">Option</a>&lt;&amp;<a class="type" href="../../rusqbin/storage/type.Bin.html" title="type rusqbin::storage::Bin">Bin</a>&gt;</code></span></h3><div class='docblock'><p>Get a bin (not just a summary) by Id</p>
+</div><h3 id='tymethod.get_bin_summary' class='method'><span id='get_bin_summary.v' class='invisible'><code>fn <a href='#tymethod.get_bin_summary' class='fnname'>get_bin_summary</a>(&amp;self, id: &amp;<a class="struct" href="../../rusqbin/models/struct.Id.html" title="struct rusqbin::models::Id">Id</a>) -&gt; <a class="enum" href="https://doc.rust-lang.org/nightly/core/option/enum.Option.html" title="enum core::option::Option">Option</a>&lt;<a class="struct" href="../../rusqbin/models/struct.BinSummary.html" title="struct rusqbin::models::BinSummary">BinSummary</a>&gt;</code></span></h3><div class='docblock'><p>Get a bin summary by Id</p>
+</div><h3 id='tymethod.get_bin_summaries' class='method'><span id='get_bin_summaries.v' class='invisible'><code>fn <a href='#tymethod.get_bin_summaries' class='fnname'>get_bin_summaries</a>(&amp;self) -&gt; <a class="struct" href="https://doc.rust-lang.org/nightly/std/collections/hash/map/struct.HashMap.html" title="struct std::collections::hash::map::HashMap">HashMap</a>&lt;<a class="struct" href="../../rusqbin/models/struct.Id.html" title="struct rusqbin::models::Id">Id</a>, <a class="struct" href="../../rusqbin/models/struct.BinSummary.html" title="struct rusqbin::models::BinSummary">BinSummary</a>&gt;</code></span></h3><div class='docblock'><p>Get bin summaries for all currently-stored bins</p>
+</div><h3 id='tymethod.insert_request' class='method'><span id='insert_request.v' class='invisible'><code>fn <a href='#tymethod.insert_request' class='fnname'>insert_request</a>(&amp;mut self, id: &amp;<a class="struct" href="../../rusqbin/models/struct.Id.html" title="struct rusqbin::models::Id">Id</a>, request: <a class="struct" href="../../rusqbin/models/struct.Request.html" title="struct rusqbin::models::Request">Request</a>) -&gt; <a class="enum" href="../../rusqbin/storage/enum.InsertRequestStatus.html" title="enum rusqbin::storage::InsertRequestStatus">InsertRequestStatus</a></code></span></h3><div class='docblock'><p>Insert a request into a Bin using a bin Id.</p>
+</div></div>
+        <h2 id='implementors' class='small-section-header'>
+          Implementors<a href='#implementors' class='anchor'></a>
+        </h2>
+        <ul class='item-list' id='implementors-list'>
+    <li><code>impl Bins for <a class="struct" href="../../rusqbin/storage/struct.InMemoryBins.html" title="struct rusqbin::storage::InMemoryBins">InMemoryBins</a></code></li>
+</ul><script type="text/javascript" async
+                         src="../../implementors/rusqbin/storage/trait.Bins.js">
+                 </script></section>
+    <section id='search' class="content hidden"></section>
+
+    <section class="footer"></section>
+
+    <aside id="help" class="hidden">
+        <div>
+            <h1 class="hidden">Help</h1>
+
+            <div class="shortcuts">
+                <h2>Keyboard Shortcuts</h2>
+
+                <dl>
+                    <dt>?</dt>
+                    <dd>Show this help dialog</dd>
+                    <dt>S</dt>
+                    <dd>Focus the search field</dd>
+                    <dt>&larrb;</dt>
+                    <dd>Move up in search results</dd>
+                    <dt>&rarrb;</dt>
+                    <dd>Move down in search results</dd>
+                    <dt>&#9166;</dt>
+                    <dd>Go to active search result</dd>
+                    <dt>+</dt>
+                    <dd>Collapse/expand all sections</dd>
+                </dl>
+            </div>
+
+            <div class="infos">
+                <h2>Search Tricks</h2>
+
+                <p>
+                    Prefix searches with a type followed by a colon (e.g.
+                    <code>fn:</code>) to restrict the search to a given type.
+                </p>
+
+                <p>
+                    Accepted types are: <code>fn</code>, <code>mod</code>,
+                    <code>struct</code>, <code>enum</code>,
+                    <code>trait</code>, <code>type</code>, <code>macro</code>,
+                    and <code>const</code>.
+                </p>
+
+                <p>
+                    Search functions by type signature (e.g.
+                    <code>vec -> usize</code> or <code>* -> vec</code>)
+                </p>
+            </div>
+        </div>
+    </aside>
+
+    
+
+    <script>
+        window.rootPath = "../../";
+        window.currentCrate = "rusqbin";
+    </script>
+    <script src="../../main.js"></script>
+    <script defer src="../../search-index.js"></script>
+</body>
+</html>

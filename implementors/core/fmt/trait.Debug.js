@@ -1,0 +1,10 @@
+(function() {var implementors = {};
+implementors["rusqbin"] = ["impl <a class=\"trait\" href=\"https://doc.rust-lang.org/nightly/core/fmt/trait.Debug.html\" title=\"trait core::fmt::Debug\">Debug</a> for <a class=\"struct\" href=\"rusqbin/models/struct.Id.html\" title=\"struct rusqbin::models::Id\">Id</a>","impl <a class=\"trait\" href=\"https://doc.rust-lang.org/nightly/core/fmt/trait.Debug.html\" title=\"trait core::fmt::Debug\">Debug</a> for <a class=\"struct\" href=\"rusqbin/models/struct.Request.html\" title=\"struct rusqbin::models::Request\">Request</a>","impl <a class=\"trait\" href=\"https://doc.rust-lang.org/nightly/core/fmt/trait.Debug.html\" title=\"trait core::fmt::Debug\">Debug</a> for <a class=\"struct\" href=\"rusqbin/models/struct.BinSummary.html\" title=\"struct rusqbin::models::BinSummary\">BinSummary</a>","impl <a class=\"trait\" href=\"https://doc.rust-lang.org/nightly/core/fmt/trait.Debug.html\" title=\"trait core::fmt::Debug\">Debug</a> for <a class=\"struct\" href=\"rusqbin/storage/struct.InMemoryBins.html\" title=\"struct rusqbin::storage::InMemoryBins\">InMemoryBins</a>","impl <a class=\"trait\" href=\"https://doc.rust-lang.org/nightly/core/fmt/trait.Debug.html\" title=\"trait core::fmt::Debug\">Debug</a> for <a class=\"struct\" href=\"rusqbin/server/struct.ContentType.html\" title=\"struct rusqbin::server::ContentType\">ContentType</a>","impl <a class=\"trait\" href=\"https://doc.rust-lang.org/nightly/core/fmt/trait.Debug.html\" title=\"trait core::fmt::Debug\">Debug</a> for <a class=\"struct\" href=\"rusqbin/server/struct.XRusqBinId.html\" title=\"struct rusqbin::server::XRusqBinId\">XRusqBinId</a>","impl <a class=\"trait\" href=\"https://doc.rust-lang.org/nightly/core/fmt/trait.Debug.html\" title=\"trait core::fmt::Debug\">Debug</a> for <a class=\"enum\" href=\"rusqbin/errors/enum.Error.html\" title=\"enum rusqbin::errors::Error\">Error</a>",];
+
+            if (window.register_implementors) {
+                window.register_implementors(implementors);
+            } else {
+                window.pending_implementors = implementors;
+            }
+        
+})()
