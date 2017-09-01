@@ -32,4 +32,4 @@ USER rusqbinuser
 
 EXPOSE 9999
 
-ENTRYPOINT ["/entry.sh"]
+ENTRYPOINT ["/entry.sh", "/rusqbin"]

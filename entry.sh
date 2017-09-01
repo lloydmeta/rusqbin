@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# Taken from https://github.com/docker-library/mysql/issues/47#issuecomment-147397851 
+# Taken from https://github.com/docker-library/mysql/issues/47#issuecomment-147397851
 # Traps SIGINT and SIGTERM signals and forwards them to the child process as SIGTERM signals
 asyncRun() {
     "$@" &
@@ -13,4 +13,4 @@ asyncRun() {
         wait
     done
 }
-asyncRun /rusqbin $@
+asyncRun $@

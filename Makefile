@@ -43,4 +43,4 @@ travis-tests:
 	travis-cargo --only nightly doc -- --no-deps
 
 docker-push-webhooks:
-	curl -X POST https://hooks.microbadger.com/images/lloydmeta/taps3/2eJRdcI8Q5-jicHcJUzJOv87AXE=
+	curl -X POST https://hooks.microbadger.com/images/lloydmeta/rusqbin/rrVQ1YxjI-TLFvb_Vq9a19Tpwxs=
