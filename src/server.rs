@@ -334,7 +334,7 @@ where
     T: Bins + Send + 'static,
 {
     pub fn new(port: usize, bins: T) -> BinsServer<T> {
-        let address = format!("127.0.0.1:{}", port);
+        let address = format!("0.0.0.0:{}", port);
         BinsServer {
             address: address,
             port: port,
